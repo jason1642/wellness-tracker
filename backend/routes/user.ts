@@ -64,11 +64,24 @@ console.log(req.params.id)
   try { await User.findOne({ _id: req.params.id }).then(ele=>user=ele) } catch(err) { return res.status(404).send('User not found')}
 
     console.log(user)
-  return res.send(_.pick(user, ['_id', 'username', 'email', 'created_at', 'updated_at']));
+  return res.send(_.pick(user, ['_id', 'username', 'email']));
   
 
 };
 router.get('/:id', getOneUser)
 
+
+// Find user by id
+const getOneUserByEmail = async (req: Request, res: Response) => { 
+console.log(req.params.id)
+  let user
+  try { await User.findOne({ email: req.params.email }).then(ele=>user=ele) } catch(err) { return res.status(404).send('User not found')}
+
+    console.log(user)
+  return res.send(_.pick(user, ['_id', 'username', 'email']));
+  
+
+};
+router.get('/find-by-email/:email', getOneUserByEmail)
 
 export default router;

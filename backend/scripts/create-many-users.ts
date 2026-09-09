@@ -30,7 +30,7 @@ const createManyDocuments = async () => {
 //   const newPostId = new mongoose.Types.ObjectId()
     return new User({
         username: ele,
-        email: `${ele}@email.com`,
+        email: `${ele}@email.net`,
         password: "password",
         // _id: newPostId
     })

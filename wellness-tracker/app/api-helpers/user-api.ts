@@ -26,6 +26,24 @@ export const createUser = async (input:UserInput) =>
   await api.get('/users/' + user_id).then(res=> res).catch(err=>err)
 
 
+
+
+
+  export const loginUser = async (input:UserInput) => 
+
+  api.post('/auth/login', input).then(res => {
+      // console.log(res.data)
+
+      localStorage.setItem('authToken', res.data.token);
+      api.defaults.headers.common.authorization = `Bearer ${res.data.token}`;
+      console.log(localStorage)
+      return res
+    })
+      .catch(err => {
+      // console.log('CANNOT LOG IN')
+      return err;
+      })
+
 //   export const removeToken = async(user_id: {user_id: string}) => {
 //     // Accepts type string, number, boolean
 //     await api.post('/user/log-out', user_id).then(res=>console.log('logged out'))

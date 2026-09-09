@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 import db from './database.ts';
 import userRoutes from './routes/user.ts';
+import authRoutes from './routes/auth.ts';
 import cors from 'cors';
 
 
@@ -12,7 +13,7 @@ db.connect();
 app.use(express.json());
 
 app.use('/users', userRoutes);
-
+app.use('/auth', authRoutes);
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
