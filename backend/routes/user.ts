@@ -54,14 +54,21 @@ router.post('/create', createUser)
 
 // Find all users
 router.get('/', (req: Request, res: Response) => {
-  res.send('Get all users');
+  res.send(res);
 });
 
 // Find user by id
-router.get('/:id', (req: Request, res: Response) => {
-  res.send('Get all users');
-});
+const getOneUser = async (req: Request, res: Response) => { 
+console.log(req.params.id)
+  let user
+  try { await User.findOne({ _id: req.params.id }).then(ele=>user=ele) } catch(err) { return res.status(404).send('User not found')}
 
+    console.log(user)
+  return res.send(_.pick(user, ['_id', 'username', 'email', 'created_at', 'updated_at']));
+  
+
+};
+router.get('/:id', getOneUser)
 
 
 export default router;

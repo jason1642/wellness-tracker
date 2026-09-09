@@ -22,7 +22,7 @@ const close = async () => {
 let documentsArray: any[] = []
 
 const createManyDocuments = async () => {
-  const users = ['john', 'karethel', 'lorinda','andy','walter', 'phillip','ryan', 'greg','violet', 'mary', 'ted', 'chris', 'flip', 'jacob']
+  const users = ['john', 'karethel', 'lorinda','alice','walter', 'phillip','ryan', 'greg','bob', 'mary', 'ted', 'chris', 'ming', 'jacob']
   await User.deleteMany()
 
   const resultArray =  users.map((ele, key ) => {
@@ -30,7 +30,7 @@ const createManyDocuments = async () => {
 //   const newPostId = new mongoose.Types.ObjectId()
     return new User({
         username: ele,
-        email: `user${key + 1 }@email.com`,
+        email: `${ele}@email.com`,
         password: "password",
         // _id: newPostId
     })

@@ -1,11 +1,12 @@
 import express, { type Express, type Request, type Response } from 'express';
 import db from './database.ts';
 import userRoutes from './routes/user.ts';
+import cors from 'cors';
 
 
 const app: Express = express();
 const port = 3001;
-
+app.use(cors());
 db.connect();
 
 app.use(express.json());

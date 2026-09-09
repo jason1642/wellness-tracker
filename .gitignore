@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .env
+/backend/sample-data.json
 # testing
 /coverage
 # production
