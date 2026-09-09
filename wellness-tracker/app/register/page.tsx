@@ -3,14 +3,14 @@ import * as React from 'react';
 import {getUserInfoById} from '../api-helpers/user-api'
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-interface ILoginProps {
+interface IRegisterProps {
 }
 type Inputs = {
   email: string
   password: string
 }
 
-const Login: React.FunctionComponent<ILoginProps> = (props) => {
+const Register: React.FunctionComponent<IRegisterProps> = (props) => {
     const {
     register,
     handleSubmit,
@@ -23,11 +23,8 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
 
 
     React.useEffect(() => {
-        getUserInfoById('6aa19a6689663ea9f9604ebd').then(res => {
-            console.log('useeffect', res)
-            setUserData(res.data)
-        }).catch(err => console.log(err))
-        // console.log('userData', userData)
+    
+        console.log('userData', userData)
     }, [])
 
     const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
@@ -36,7 +33,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
   return (
         <div className="bg-grey border border-white p-4 rounded-lg">
 
-            <h2>Log In</h2>
+            <h2>Create an account</h2>
             <form 
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col bg-zinc-800 p-4 rounded-lg gap-2 "
@@ -51,10 +48,10 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
             </form>            
 
             <div>
-                Don't have an account?  <a href="/register" className="text-blue-500">Sign Up Here</a>
+                Already have an account?<a href="/login" className="text-blue-500">Log In Here</a>
             </div>
         </div>
   );
 };
 
-export default Login;
+export default Register;
