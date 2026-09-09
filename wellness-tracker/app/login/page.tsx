@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react';
-import {getUserInfoById} from '../api-helpers/user-api'
+import {getUserInfoById, loginUser} from '../api-helpers/user-api'
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface ILoginProps {
@@ -30,8 +30,16 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
         // console.log('userData', userData)
     }, [])
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+    const onSubmit: SubmitHandler<Inputs> = (data) => {
+        loginUser({email: data.email, password: data.password, username: '', bio: ''}).then(res => {
+            console.log('login res', res)
+        }).catch(err => console.log(err))    
+        console.log(data)
+    }
       console.log(watch("email")) 
+
+
+    //   after successful login renavigate to dashboard page and pass user data as props or use context to store user data and access it in dashboard page
 
   return (
         <div className="bg-grey border border-white p-4 rounded-lg">
