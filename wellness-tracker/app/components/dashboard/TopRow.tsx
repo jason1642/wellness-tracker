@@ -1,31 +1,38 @@
 import * as React from 'react';
+import { Moon, Footprints, GlassWater, Flame } from "lucide-react";
+
 
 interface ITopRowProps {
+    trackerData: any;
 }
 
-const TopRow: React.FunctionComponent<ITopRowProps> = (props) => {
+const TopRow: React.FunctionComponent<ITopRowProps> = (trackerData) => {
+    const stats = [
+  { icon: Moon, label: "Sleep", value: "7.2h" },
+  { icon: Footprints, label: "Steps", value: "8,412" },
+  { icon: GlassWater, label: "Water", value: "6 cups" },
+  { icon: Flame, label: "Calories", value: "1,840" },
+];
+
+    React.useEffect(()=>{
+        console.log("top row", trackerData)
+    },[])
   return (
-    <div className="flex flex-row justify-between">
+      <div className="bg-neutral-900 px-8 py-6">
+      <div className="flex flex-wrap gap-x-14 gap-y-6">
 
-        <div className='flex flex-col'>
-            <p>Sleep</p>
-            <p>7.2h</p>
+        {stats.map(({ icon: Icon, label, value }) => (
+          <div key={label} className="flex flex-col gap-2">
+            <div className="flex items-center gap-1.5 text-neutral-400">
+              <Icon size={14} strokeWidth={1.75} />
+              <span className="text-sm">{label}</span>
             </div>
-
-           <div className='flex flex-col'>
-            <p>Steps</p>
-            <p>5,214</p>
-            </div>
-
-               <div className='flex flex-col'>
-            <p>Water</p>
-            <p>6 Cups</p>
-            </div>
-
-               <div className='flex flex-col'>
-            <p>Calories</p>
-            <p>1,524</p>
-            </div>
+            <span className="text-2xl font-medium text-neutral-50 tabular-nums">
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

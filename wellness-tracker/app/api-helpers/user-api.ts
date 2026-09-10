@@ -26,7 +26,8 @@ export const createUser = async (input:UserInput) =>
   await api.get('/users/' + user_id).then(res=> res).catch(err=>err)
 
 
-
+//   export const getTrackerData = async (user_id: string) =>
+//     await api.get()
 
 
   export const loginUser = async (input:UserInput) => 
