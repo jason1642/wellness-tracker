@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { TrackerModel } from '../../types'
+// import { TrackerModel } from '../../types'
 
 interface IRecentEntriesProps {
-    trackerData: TrackerModel;
+    entryData: any;
 }
 
-const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = (trackerData) => {
+const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({entryData}) => {
 
       React.useEffect(()=>{
-            console.log("top row", trackerData)
+            console.log("Entry section", entryData)
         },[])
   return (
     <div>
-        RecentEntries
+        RecentEntries 
     </div>
   );
 };

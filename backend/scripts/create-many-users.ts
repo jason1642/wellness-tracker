@@ -28,24 +28,23 @@ const close = async () => {
 };
 
 let documentsArray: any[] = [];
-
+const users = [
+  "john",
+  "karethel",
+  "lorinda",
+  "alice",
+  "walter",
+  "phillip",
+  "ryan",
+  "greg",
+  "bob",
+  "mary",
+  "ted",
+  "chris",
+  "ming",
+  "jacob",
+];
 const createManyDocuments = async () => {
-  const users = [
-    "john",
-    "karethel",
-    "lorinda",
-    "alice",
-    "walter",
-    "phillip",
-    "ryan",
-    "greg",
-    "bob",
-    "mary",
-    "ted",
-    "chris",
-    "ming",
-    "jacob",
-  ];
   await User.deleteMany();
   await Tracker.deleteMany();
   await Entry.deleteMany();

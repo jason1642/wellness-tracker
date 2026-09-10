@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react';
-import {getTrackerByUserId} from '../api-helpers/tracker-api'
+import {getTrackerByUserId, getEntriesByUserId} from '../api-helpers/tracker-api'
 import TopRow from '../components/dashboard/TopRow';
 import ChartSection from '../components/dashboard/ChartSection';
 import RecentEntries from '../components/dashboard/RecentEntries';
@@ -13,6 +13,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
 
     const [userData, setUserData ] = React.useState()
     const [trackerData, setTrackerData ] = React.useState()
+    const [entryData, setEntryData ] = React.useState()
 
 
     React.useEffect(() => {
@@ -25,6 +26,10 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
             }).catch(err=>{
                 console.log(err)
             })
+            getEntriesByUserId(res.data._id).then(res2=>{
+                console.log("entry data" , res2.data)
+                setEntryData(res2.data)
+            }).catch(err=>{console.log(err)})
         }).catch(err=>{console.log(err)})
         console.log('dashboard')
     }, [])
@@ -40,7 +45,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
                  <div>
                 <TopRow trackerData={trackerData} />
                 <ChartSection trackerData={trackerData}/>
-                <RecentEntries trackerData={trackerData}/>
+                <RecentEntries entryData={entryData}/>
             </div> 
             : 
             <div> loading... </div>
