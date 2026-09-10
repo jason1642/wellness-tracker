@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "start": "npx tsx --watch app.ts",
-    "seed": "npx tsx scripts/create-many-users.ts"
+    "seed-users": "npx tsx scripts/create-many-users.ts",
+    "seed-sleep-data": "npx tsx scripts/create-sleep-data.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

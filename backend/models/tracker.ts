@@ -23,28 +23,22 @@ const { Schema } = mongoose;
   })
 
 
-  
+
 const trackerSchema = new Schema({
-  user_id:{
-    type: {
-      user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
-      email: { type: String, required: false },
-    },
-    required: true
-},
-sleep: {
+  user_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
+sleep_data: {
     type: [sleepSchema],
     default: []
 },
-water: {
+water_data: {
     type: [waterSchema],
     default: []
 },
-calories: {
+calories_data: {
     type: [caloriesSchema],
     default: []
 },
-steps: {
+steps_data: {
     type: [stepsSchema],
     default: []
 }

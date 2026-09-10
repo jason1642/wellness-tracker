@@ -2,6 +2,7 @@
 import * as React from 'react';
 import {getUserInfoById, loginUser} from '../api-helpers/user-api'
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 interface ILoginProps {
 }
@@ -11,6 +12,7 @@ type Inputs = {
 }
 
 const Login: React.FunctionComponent<ILoginProps> = (props) => {
+    const router = useRouter();
     const {
     register,
     handleSubmit,
@@ -32,8 +34,11 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         loginUser({email: data.email, password: data.password, username: '', bio: ''}).then(res => {
-            console.log('login res', res)
-        }).catch(err => console.log(err))    
+            console.log('login success', res)
+            router.push('/dashboard')
+        }).catch(err => {
+            console.log(err)
+        })    
         console.log(data)
     }
       console.log(watch("email")) 
@@ -42,24 +47,33 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
     //   after successful login renavigate to dashboard page and pass user data as props or use context to store user data and access it in dashboard page
 
   return (
-        <div className="bg-grey border border-white p-4 rounded-lg">
+        <div className="bg-grey border border-white p-4 rounded-lg max-w-6xl mx-auto mt-16">
 
-            <h2>Log In</h2>
+            <h2 className="text-5xl p-4 mx-auto text-center">Log In</h2>
             <form 
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col bg-zinc-800 p-4 rounded-lg gap-2 "
+            className="flex flex-col bg-zinc-800 p-4 rounded-lg gap-2 w-[80%] mx-auto"
             >
-                <input {...register("email", { required: true })} placeholder="Email" />
+                <input {...register("email", { required: true })} 
+                placeholder="Email"
+                className="mt-2 bg-blue-400" 
+                />
                 {errors.email && <span>This field is required</span>}
                 
-                <input {...register("password", { required: true })} placeholder="Password" />
+                <input {...register("password", { required: true })}
+                 placeholder="Password"
+                 className="mt-2 bg-blue-400"
+                 type="password"
+                 />
                 {errors.password && <span>This field is required</span>}
                 
                 <input type="submit" />
             </form>            
 
-            <div>
+            <div className="flex items-center justify-center mt-4">
+               <p>
                 Don't have an account?  <a href="/register" className="text-blue-500">Sign Up Here</a>
+                </p> 
             </div>
         </div>
   );
