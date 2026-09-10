@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://jasons-wellness-tracker.up.railway.app"
+    ? "https://backend-production-acbe7.up.railway.app"
     : "http://localhost:3001";
 
 const api = axios.create({ baseURL: baseUrl });

@@ -19,17 +19,15 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
     formState: { errors },
   } = useForm<Inputs>();
   // eslint-disable-next-line
-  const [userData, setUserData] = React.useState<any>({});
+  // const [userData, setUserData ] = React.useState<any>({})
 
-  React.useEffect(() => {
-    getUserInfoById("6aa19a6689663ea9f9604ebd")
-      .then((res) => {
-        console.log("useeffect", res);
-        setUserData(res.data);
-      })
-      .catch((err) => console.log(err));
-    // console.log('userData', userData)
-  }, []);
+  // React.useEffect(() => {
+  //     getUserInfoById('6aa19a6689663ea9f9604ebd').then(res => {
+  //         console.log('useeffect', res)
+  //         setUserData(res.data)
+  //     }).catch(err => console.log(err))
+  //     // console.log('userData', userData)
+  // }, [])
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     loginUser({
