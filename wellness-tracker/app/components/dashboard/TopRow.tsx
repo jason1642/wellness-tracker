@@ -20,7 +20,7 @@ const TopRow: React.FunctionComponent<ITopRowProps> = ({trackerData}) => {
         console.log("top row", trackerData)
     },[])
   return (
-      <div className="bg-neutral-900 px-8 py-6 flex">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl px-8 py-6 flex mb-4">
       <div className="flex justify-around gap-y-6 w-full">
 
         {stats.map(({ icon: Icon, label, value }) => (

@@ -1,11 +1,19 @@
-import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
-
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 import * as React from 'react'
 import { TrackerModel } from '../../types'
 
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const  aggregateByDay = async (rawData) => {
-  const totals = {};
+ const totals = {};
  
   rawData.forEach(({ timestamp, sleepMinutes }) => {
     const date = new Date(timestamp);
@@ -15,71 +23,49 @@ const  aggregateByDay = async (rawData) => {
   });
  
   return Object.entries(totals)
-    .map(([day, minutes]) => ({
-      day,
-      hours: Math.round((minutes / 60) * 10) / 10,
-    }))
+    .map(([day, minutes]) => {
+      const date = new Date(day);
+      const totalHours = (minutes / 60) + 6;
+      const wholeHours = Math.floor(totalHours);
+      const remainderMinutes = Math.round((totalHours - wholeHours) * 60);
+      return {
+        day,
+        dayLabel: DAY_LABELS[date.getUTCDay()],
+        fullDate: date.toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        }),
+        hours: Math.round(totalHours * 10) / 10,
+        durationLabel: `${wholeHours}h ${remainderMinutes}m`,
+      };
+    })
     .sort((a, b) => a.day.localeCompare(b.day))
     .slice(-7); // last 7 days
 }
 
-// const getIntroOfPage = (label: string | number | undefined) => {
-//   if (label === 'Page A') {
-//     return "Page A is about men's clothing";
-//   }
-//   if (label === 'Page B') {
-//     return "Page B is about women's dress";
-//   }
-//   if (label === 'Page C') {
-//     return "Page C is about women's bag";
-//   }
-//   if (label === 'Page D') {
-//     return 'Page D is about household goods';
-//   }
-//   if (label === 'Page E') {
-//     return 'Page E is about food';
-//   }
-//   if (label === 'Page F') {
-//     return 'Page F is about baby food';
-//   }
-//   return '';
-// };
 
-// const CustomTooltip = ({ active, payload, label }: TooltipContentProps) => {
-//   const firstPayload = payload?.[0];
-//   const isVisible = active && firstPayload != null;
-//   return (
-//     <div
-//       className="custom-tooltip"
-//       style={{
-//         // ...theme?.typography,
-//         // ...theme?.tooltip?.contentStyle,
-//         visibility: isVisible ? 'visible' : 'hidden',
-//       }}
-//     >
-//       {isVisible && (
-//         <>
-//           <p className="label">{`${label} : ${firstPayload.value}`}</p>
-//           <p className="intro">{getIntroOfPage(label)}</p>
-//           <p className="desc">Anything you want can be displayed here.</p>
-//         </>
-//       )}
-//     </div>
-//   );
-// };
+
+const ChartTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null;
+  const { fullDate, durationLabel } = payload[0].payload;
+ 
+  return (
+    <div className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-xs text-neutral-400">{fullDate}</p>
+      <p className="text-sm font-medium text-neutral-50">{durationLabel} slept</p>
+    </div>
+  );
+}
 
 const ChartSection = ({
   isAnimationActive,
-//   defaultIndex,
   trackerData
 }: {
   isAnimationActive?: boolean;
-//   defaultIndex?: TooltipIndex;
   trackerData: TrackerModel
 }) => {
     const [sleepData, setSleepData ] = React.useState<Array<any>>()
-//     const chartData = React.useMemo(() => aggregateByDay(trackerData.sleep_data), [trackerData.sleep_data]);
-//   const lastIndex = chartData.length - 1;
+
     React.useEffect(()=>{
             console.log("Recent entries", trackerData)
             aggregateByDay(trackerData.sleep_data).then(res=>{
@@ -94,12 +80,30 @@ const ChartSection = ({
     <>{
          sleepData ? 
          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl px-6 py-5">
-      <p className="text-sm font-medium text-neutral-50 mb-4">
+      <p className="text-xl font-medium text-neutral-50 mb-4">
         Sleep trend, last 7 days
       </p>
-      <div className="h-28">
+      <div className="h-28 min-h-70">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={sleepData} barCategoryGap="20%">
+              <XAxis
+              dataKey="dayLabel"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#8a8a8a", fontSize: 12 }}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#8a8a8a", fontSize: 12 }}
+              width={32}
+              tickFormatter={(value) => `${value}h`}
+              domain={[0, "dataMax + 1"]}
+            />
+            <Tooltip
+              content={<ChartTooltip active={isAnimationActive} payload={sleepData} />}
+              cursor={{ fill: "#ffffff", fillOpacity: 0.04 }}
+            />
             <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
               {sleepData && sleepData.map((_, index) => (
                 <Cell
