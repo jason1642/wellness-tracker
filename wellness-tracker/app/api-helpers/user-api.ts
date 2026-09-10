@@ -44,8 +44,24 @@ export const createUser = async (input:UserInput) =>
       return err;
       })
 
-//   export const removeToken = async(user_id: {user_id: string}) => {
-//     // Accepts type string, number, boolean
-//     await api.post('/user/log-out', user_id).then(res=>console.log('logged out'))
-//     api.defaults.headers.common.authorization = false;
-//   };
+
+// Verify user - get full user info after checking token
+
+export const verifyUser = async () => {
+    const token = localStorage.getItem('authToken')
+    return api.post('/auth/verify', {token: token}).then(res => {
+        console.log('verify user res', res)
+        return res
+    }).catch(err => {
+        console.log('verify user err', err)
+        return err
+    })
+}
+
+
+// logout
+  export const removeToken = async(user_id: {user_id: string}) => {
+    // Accepts type string, number, boolean
+    // await api.post('/user/log-out', user_id).then(res=>console.log('logged out'))
+    api.defaults.headers.common.authorization = false;
+  };

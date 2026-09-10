@@ -30,7 +30,7 @@ console.log(process.env.MONGODB_USERNAME, "this is the process.env")
 
 
 
-
+// can be altered later to generate steps data as well if given the correct parameters
 function generateSleepData(days: number = 7): SleepEntry[] {
   const INTERVAL_MINUTES = 10
   const entries: SleepEntry[] = []
@@ -83,11 +83,12 @@ function generateSleepData(days: number = 7): SleepEntry[] {
         const isInterrupted = Math.random() < 0.05
         sleepMinutes = isInterrupted ? Math.floor(Math.random() * 6) : INTERVAL_MINUTES
       }
- 
+     
       entries.push({
         timestamp: intervalStart.toISOString(),
         sleepMinutes,
       })
+    //    console.log(entries)
     }
   }
  
@@ -106,7 +107,10 @@ const assignSleepDataToTrackers = async () => {
         const sleepData = generateSleepData(7)
         const newTrackerData = {
             ...tracker,
-            sleep_data: sleepData
+            sleep_data: sleepData,
+            water_data: Math.floor(Math.random() * 15) + 1,
+            steps_data: Math.floor(Math.random() * 10000) + 1,
+            calories_data: Math.floor(Math.random() * 2500) + 1,
         }
         documentsArray.push(newTrackerData)
         return newTrackerData

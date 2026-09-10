@@ -45,10 +45,10 @@ const createManyDocuments = async () => {
     
     const newTracker: InstanceType<typeof Tracker> = new Tracker({
       user_id: newUser._id,
-      sleep_data: [],
-      water_data: [],
-      calories_data: [],
-      steps_data: []
+      // sleep_data: [],
+      // water_data: [],
+      // calories_data: [],
+      // steps_data: []
     })
 
     newUser.tracker_id = newTracker._id

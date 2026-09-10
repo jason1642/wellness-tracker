@@ -7,20 +7,19 @@ const { Schema } = mongoose;
         sleepMinutes: { type: Number, required: true }
   })
 
-  const waterSchema = new mongoose.Schema({
-    timestamp: { type: Date, required: true },
-    ouncesDrank: { type: Number, required: true }
-  })
+//   const waterSchema = new mongoose.Schema({
+//     timestamp: { type: Date, required: true },
+//     ouncesDrank: { type: Number, required: true }
+//   })
 
-  const caloriesSchema = new mongoose.Schema({
-    timestamp: { type: Date, required: true },
-    caloriesConsumed: { type: Number, required: true }
-  })
+//   const caloriesSchema = new mongoose.Schema({
+//     type: Number, required: false, default: 2200
+//   })
 
-  const stepsSchema = new mongoose.Schema({
-    timestamp: { type: Date, required: true },
-    stepsTaken: { type: Number, required: true }
-  })
+//   const stepsSchema = new mongoose.Schema({
+//     timestamp: { type: Date, required: true },
+//     stepCount: { type: Number, required: true }
+//   })
 
 
 
@@ -31,16 +30,16 @@ sleep_data: {
     default: []
 },
 water_data: {
-    type: [waterSchema],
-    default: []
+    type: Number,
+    default: 15
 },
 calories_data: {
-    type: [caloriesSchema],
-    default: []
+    type: Number,
+    default: 2200
 },
 steps_data: {
-    type: [stepsSchema],
-    default: []
+    type: Number,
+    default: 8500
 }
 });
 
