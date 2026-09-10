@@ -97,7 +97,7 @@ const ChartSection = ({
               tickLine={false}
               tick={{ fill: "#8a8a8a", fontSize: 12 }}
               width={32}
-              tickFormatter={(value) => `${value}h`}
+              tickFormatter={(value) => `${Math.floor(value)}h`}
               domain={[0, "dataMax + 1"]}
             />
             <Tooltip

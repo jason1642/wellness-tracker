@@ -1,0 +1,92 @@
+[
+  {
+    "date": "2026-09-10T08:00:00.000Z",
+    "notes": "Felt energetic after run",
+    "mood": "happy",
+    "hours_slept": 7.2,
+    "medication": 1,
+    "weight": 138.4,
+    "screen_time": 245
+  },
+  {
+    "date": "2026-09-09T08:00:00.000Z",
+    "notes": "Busy day at work, skipped lunch",
+    "mood": "stressed",
+    "hours_slept": 5.8,
+    "medication": 1,
+    "weight": 139.1,
+    "screen_time": 410
+  },
+  {
+    "date": "2026-09-08T08:00:00.000Z",
+    "notes": "Relaxing weekend, read a book",
+    "mood": "calm",
+    "hours_slept": 8.5,
+    "medication": 0,
+    "weight": 139.6,
+    "screen_time": 120
+  },
+  {
+    "date": "2026-09-07T08:00:00.000Z",
+    "notes": "Went hiking with friends",
+    "mood": "happy",
+    "hours_slept": 7.9,
+    "medication": 1,
+    "weight": 139.3,
+    "screen_time": 90
+  },
+  {
+    "date": "2026-09-06T08:00:00.000Z",
+    "notes": "",
+    "mood": "neutral",
+    "hours_slept": 6.5,
+    "medication": 1,
+    "weight": 140.2,
+    "screen_time": 300
+  },
+  {
+    "date": "2026-09-05T08:00:00.000Z",
+    "notes": "Trouble falling asleep, mind racing",
+    "mood": "anxious",
+    "hours_slept": 4.9,
+    "medication": 2,
+    "weight": 140.5,
+    "screen_time": 520
+  },
+  {
+    "date": "2026-09-04T08:00:00.000Z",
+    "notes": "Good productive day",
+    "mood": "content",
+    "hours_slept": 7.6,
+    "medication": 1,
+    "weight": 139.8,
+    "screen_time": 275
+  },
+  {
+    "date": "2026-09-03T08:00:00.000Z",
+    "notes": "Forgot to log meals",
+    "mood": "tired",
+    "hours_slept": 6.1,
+    "medication": 0,
+    "weight": 140.0,
+    "screen_time": 380
+  },
+  {
+    "date": "2026-09-02T08:00:00.000Z",
+    "notes": "Caught up with an old friend",
+    "mood": "happy",
+    "hours_slept": 7.3,
+    "medication": 1,
+    "weight": 139.9,
+    "screen_time": 200
+  },
+  {
+    "date": "2026-09-01T08:00:00.000Z",
+    "notes": "Rough start to the month",
+    "mood": "low",
+    "hours_slept": 5.5,
+    "medication": 1,
+    "weight": 140.7,
+    "screen_time": 460
+  }
+]
