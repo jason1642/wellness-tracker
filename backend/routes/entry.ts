@@ -7,7 +7,7 @@ const router = Router();
 
 // Find entry list by user id
 const getEntriesByUserId = async (req: Request, res: Response) => {
-  console.log(req.params.user_id);
+  //   console.log(req.params.user_id);
   let entries;
   try {
     await Entry.findOne({ user_id: req.params.user_id }).then(
@@ -17,7 +17,7 @@ const getEntriesByUserId = async (req: Request, res: Response) => {
     return res.status(404).send("User id not found");
   }
 
-  console.log(entries);
+  //   console.log(entries);
   return res.send(entries);
 };
 router.get("/:user_id", getEntriesByUserId);

@@ -15,7 +15,7 @@ const TopRow: React.FunctionComponent<ITopRowProps> = ({ trackerData }) => {
   ];
 
   React.useEffect(() => {
-    console.log("top row", trackerData);
+    // console.log("top row", trackerData);
   }, []);
   return (
     <div className="bg-[#181B22] border border-neutral-800 rounded-2xl px-8 py-6 flex mb-4">

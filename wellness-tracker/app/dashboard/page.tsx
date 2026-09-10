@@ -19,7 +19,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
     verifyUser()
       .then((res) => {
         console.log("dashboardVerifyUser", res.data);
-        setUserData(res);
+        setUserData(res.data);
         getTrackerByUserId(res.data._id)
           .then((res1) => {
             console.log("tracker data: ", res1);
@@ -52,7 +52,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
         <div className="flex flex-col ">
           <TopRow trackerData={trackerData} />
           <ChartSection trackerData={trackerData} />
-          <RecentEntries entryData={entryData} />
+          <RecentEntries userData={userData} entryData={entryData} />
         </div>
       ) : (
         <div> loading... </div>

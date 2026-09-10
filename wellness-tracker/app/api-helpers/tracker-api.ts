@@ -20,6 +20,6 @@ export const getEntriesByUserId = async (user_id: string) =>
 
 export const updateSingleEntryById = async (data) =>
   await api
-    .put("/entry", data)
+    .put("/entry/edit", data)
     .then((res) => res)
     .catch((err) => err);
