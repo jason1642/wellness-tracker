@@ -1,5 +1,27 @@
 # wellness-tracker
 
+### Installation
+Front end
+```bash
+cd wellness-tracker && npm run dev
+```
+
+Back End
+```
+/// Start server
+cd backend && npx tsx --watch app.ts
+/// Seeding data
+cd backend && npm run seed-users
+cd backend && npm run seed-sleep-data
+
+/// .env values
+MONGODB_PASSWORD=
+MONGODB_USERNAME=
+PORT=3001
+TOKEN_SECRET=
+```
+
+
 This project is a full stack application using React(nextjs) and expressjs with mongodb. It is a wellness tracker that allows users to keep track of their personal health data and visualize it with a dashboard and features an entry log that they can use. i wrote scripts to manually create randomized users and sleep data and referenced them together in the database
 
 <img width="1152" height="1215" alt="Screenshot 2026-09-10 at 6 26 17 PM" src="https://github.com/user-attachments/assets/5636dd8c-0fa4-408e-a322-86b0b1aab3d2" />
