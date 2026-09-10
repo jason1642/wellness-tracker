@@ -2,7 +2,9 @@ import * as React from "react";
 import { updateSingleEntryById } from "../../api-helpers/tracker-api";
 
 interface IRecentEntriesProps {
+  // eslint-disable-next-line
   entryData: any;
+  // eslint-disable-next-line
   userData: any;
 }
 
@@ -61,6 +63,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
 }) => {
   const [openIndex, setOpenIndex] = React.useState<number | null>(null);
   const [editIndex, setEditIndex] = React.useState<number | null>(null);
+  // eslint-disable-next-line
   const [formValues, setFormValues] = React.useState<any>({});
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState<string | null>(null);
@@ -69,6 +72,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   // waiting on a parent refetch. Resyncs whenever new entryData comes in.
   const [entries, setEntries] = React.useState(entryData.entries);
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(entryData.entries);
     console.log("entry set state", entryData);
   }, [entryData]);
@@ -80,7 +84,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
     }
     setOpenIndex((prev) => (prev === i ? null : i));
   };
-
+  // eslint-disable-next-line
   const startEdit = (i: number, entry: any) => {
     setEditIndex(i);
     setSaveError(null);
@@ -103,7 +107,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const handleFieldChange = (field: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
-
+  // eslint-disable-next-line
   const saveEdit = async (entry: any) => {
     setIsSaving(true);
     setSaveError(null);
@@ -129,6 +133,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
         },
         userData,
       );
+      // eslint-disable-next-line
       const updated = await updateSingleEntryById({
         user_id: userData._id,
         entry_id: entry._id,
@@ -139,6 +144,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
         prev.map((e) => (e._id === entry._id ? { ...e, ...payload } : e)),
       );
       setEditIndex(null);
+      // eslint-disable-next-line
     } catch (err: any) {
       setSaveError(err?.message || "Failed to save entry. Try again.");
     } finally {

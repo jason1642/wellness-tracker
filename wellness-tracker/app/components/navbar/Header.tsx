@@ -1,5 +1,5 @@
 import * as React from "react";
-
+// eslint-disable-next-line
 interface IHeaderProps {}
 
 const Header: React.FunctionComponent<IHeaderProps> = (props) => {

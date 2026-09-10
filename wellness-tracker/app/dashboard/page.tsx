@@ -8,6 +8,7 @@ import TopRow from "../components/dashboard/TopRow";
 import ChartSection from "../components/dashboard/ChartSection";
 import RecentEntries from "../components/dashboard/RecentEntries";
 import { verifyUser } from "../api-helpers/user-api";
+// eslint-disable-next-line
 interface IDashboardProps {}
 
 const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {

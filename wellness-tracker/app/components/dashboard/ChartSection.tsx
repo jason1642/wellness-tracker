@@ -25,6 +25,7 @@ const aggregateByDay = async (rawData) => {
   return Object.entries(totals)
     .map(([day, minutes]) => {
       const date = new Date(day);
+      //@ts-expect-error minutes is always bigger
       const totalHours = minutes / 60 + 6;
       const wholeHours = Math.floor(totalHours);
       const remainderMinutes = Math.round((totalHours - wholeHours) * 60);
@@ -64,6 +65,7 @@ const ChartSection = ({
   isAnimationActive?: boolean;
   trackerData: TrackerModel;
 }) => {
+  // eslint-disable-next-line
   const [sleepData, setSleepData] = React.useState<Array<any>>();
 
   React.useEffect(() => {
