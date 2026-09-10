@@ -38,9 +38,9 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
             {
                 (userData && trackerData) ? 
                  <div>
-                <TopRow trackerData/>
-                <ChartSection />
-                <RecentEntries />
+                <TopRow trackerData={trackerData} />
+                <ChartSection trackerData={trackerData}/>
+                <RecentEntries trackerData={trackerData}/>
             </div> 
             : 
             <div> loading... </div>
