@@ -54,15 +54,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
   return (
     <div className="min-h-screen bg-[#111318] font-[Inter,-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]">
       {/* Header — same dark tone family as the rest of the app, just one shade darker to read as "chrome" */}
-      <header className="flex items-center justify-between border-b border-[#22252C] bg-[#0D0F13] px-8 py-4">
-        <span className="text-xl font-semibold text-[#F2F3F5]">Zealthy</span>
-        <Link
-          href="/login"
-          className="text-sm text-[#8B92A1] transition-colors hover:text-[#F2F3F5]"
-        >
-          Log in
-        </Link>
-      </header>
+
       <main className="flex items-center justify-center px-4 py-20">
         <div className="w-full max-w-[720px] rounded-xl border border-[#262A33] bg-[#181B22] p-8">
           <h1 className="mb-1 text-2xl font-semibold text-[#F2F3F5]">Log in</h1>
