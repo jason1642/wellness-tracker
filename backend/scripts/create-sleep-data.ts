@@ -29,7 +29,7 @@ console.log(process.env.MONGODB_USERNAME, "this is the process.env")
  */
 
 
-let documentsArray: any[] = []
+
 
 function generateSleepData(days: number = 7): SleepEntry[] {
   const INTERVAL_MINUTES = 10
@@ -95,33 +95,50 @@ function generateSleepData(days: number = 7): SleepEntry[] {
 }
 
 
-
+let result: any[] = []
 
 const assignSleepDataToTrackers = async () => {
     const trackers = await Tracker.find({}).lean().limit(30)
-    const assign = trackers.map(async (tracker) => {
+    let documentsArray: any[] = []
+   
+    console.log("TRACKERLIST", trackers)
+    trackers.forEach((tracker) => {
         const sleepData = generateSleepData(7)
-        const userWithSleepData = {
+        const newTrackerData = {
             ...tracker,
             sleep_data: sleepData
         }
-        documentsArray.push(userWithSleepData)
+        documentsArray.push(newTrackerData)
+        return newTrackerData
+
     })
     
-    console.log("documentsArray", documentsArray)
-    console.log('assign', assign)
+    // console.log("documentsArray", documentsArray)
+    console.log('documents Array', documentsArray)
+    
+    await Tracker.deleteMany()
+    await Tracker.insertMany(documentsArray)
+    result = documentsArray
 }
+
+await assignSleepDataToTrackers().then(() => {
+    console.log('Sleep data assigned to trackers')
+  
+}).catch((err) => {
+    console.error('Error assigning sleep data to trackers:', err)
+   
+})
  
-const sleepData = generateSleepData(7)
-console.log(JSON.stringify({ data: sleepData }, null, 2))
+// const sleepData = generateSleepData(7)
+// console.log(JSON.stringify({ data: sleepData }, null, 2))
  
 // parse json
-var jsonObj = JSON.parse(`{"sleep_data" :${JSON.stringify(documentsArray)}}`);
-console.log(jsonObj);
+var jsonObj = JSON.parse(`{"sleep_data" :${JSON.stringify(result)}}`);
+// console.log(jsonObj);
  
 // stringify JSON Object
-var jsonContent = JSON.stringify(documentsArray);
-console.log(jsonContent);
+var jsonContent = JSON.stringify(result);
+// console.log(jsonContent);
  
 fs.writeFile("./sleep-data.json", jsonContent, 'utf8', function (err) {
     if (err) {

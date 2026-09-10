@@ -3,22 +3,22 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
   const sleepSchema = new mongoose.Schema({
- date: { type: Date, required: true },
-        minutesSlept: { type: Number, required: true }
+ timestamp: { type: Date, required: true },
+        sleepMinutes: { type: Number, required: true }
   })
 
   const waterSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
+    timestamp: { type: Date, required: true },
     ouncesDrank: { type: Number, required: true }
   })
 
   const caloriesSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
+    timestamp: { type: Date, required: true },
     caloriesConsumed: { type: Number, required: true }
   })
 
   const stepsSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
+    timestamp: { type: Date, required: true },
     stepsTaken: { type: Number, required: true }
   })
 
