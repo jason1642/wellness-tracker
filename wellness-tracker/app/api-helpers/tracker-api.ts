@@ -17,3 +17,9 @@ export const getEntriesByUserId = async (user_id: string) =>
     .get("/entry/" + user_id)
     .then((res) => res)
     .catch((err) => err);
+
+export const updateSingleEntryById = async (data) =>
+  await api
+    .put("/entry", data)
+    .then((res) => res)
+    .catch((err) => err);

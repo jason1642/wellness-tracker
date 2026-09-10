@@ -7,7 +7,7 @@ const singleEntrySchema = new mongoose.Schema({
   notes: { type: String, required: false, default: "" },
   mood: { type: String, required: false, default: "" },
   hours_slept: { type: Number, required: false, default: 7 },
-  medication: { type: Number, required: false, default: "" },
+  medication: { type: Number, required: false, default: 0 },
   weight: { type: Number, required: false, default: 140 },
   screen_time: { type: Number, required: false, default: 0 },
 });

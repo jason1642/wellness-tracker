@@ -194,6 +194,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                         {entry.notes || "No note"}
                       </dd>
                     </div>
+                    <button>edit</button>
                   </div>
                 )}
               </div>
