@@ -7,7 +7,7 @@ import entryRoutes from "./routes/entry.ts";
 import cors from "cors";
 
 const app: Express = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 app.use(cors());
 db.connect();
 

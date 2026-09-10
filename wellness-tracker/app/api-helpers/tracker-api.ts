@@ -2,8 +2,9 @@ import axios from "axios";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://zealthy.vercel.app/api"
+    ? "https://jasons-wellness-tracker.up.railway.app"
     : "http://localhost:3001";
+
 const api = axios.create({ baseURL: baseUrl });
 
 export const getTrackerByUserId = async (user_id: string) =>
