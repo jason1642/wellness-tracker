@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { verifyUser } from "../../api-helpers/user-api";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 // eslint-disable-next-line
@@ -12,6 +12,7 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
   // otherwise have login and signup buttons
   const [userData, setUserData] = React.useState();
   const router = useRouter();
+  const pathname = usePathname();
   const handleLogout = () => {
     localStorage.clear();
 
@@ -29,9 +30,10 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
       })
       .catch((err) => {
         console.log(err);
+        setUserData(undefined);
       });
     console.log("header", userData);
-  }, []);
+  }, [pathname]);
 
   return (
     <header className=" bg-[#111318] p-4 flex items-baseline justify-between">
