@@ -11,6 +11,8 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
   // Add welcome back message with username if logged in, have nav buttons to user account if logged in
   // otherwise have login and signup buttons
   const [userData, setUserData] = React.useState();
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const router = useRouter();
   const pathname = usePathname();
   const handleLogout = () => {
@@ -23,6 +25,9 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
     router.replace("/login");
   };
   React.useEffect(() => {
+    // eslint-disable-next-line
+    setIsLoading(true);
+
     verifyUser()
       .then((res) => {
         console.log("dashboardVerifyUser", res.data);
@@ -31,8 +36,11 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
       .catch((err) => {
         console.log(err);
         setUserData(undefined);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    console.log("header", userData);
+    console.log("HEADER useffect render", userData);
   }, [pathname]);
 
   return (
@@ -43,7 +51,9 @@ const Header: React.FunctionComponent<IHeaderProps> = (props) => {
         </h1>
       </div>
 
-      {userData ? (
+      {isLoading ? (
+        <div className="h-9 w-16" />
+      ) : userData ? (
         <button
           type="button"
           onClick={handleLogout}
