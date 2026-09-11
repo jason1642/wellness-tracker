@@ -4,6 +4,8 @@
 https://jasons-wellness-tracker.up.railway.app/
 
 ### Installation
+frontend and backend run on separate folders, run npm i in both root directories, at the level of their respective package.json files
+
 Front end
 ```bash
 cd wellness-tracker && npm run dev
