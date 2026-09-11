@@ -19,6 +19,12 @@ export const getEntriesByUserId = async (user_id: string) =>
     .then((res) => res)
     .catch((err) => err);
 
+export const createNewEntry = async (data) =>
+  await api
+    .post(`/entry/${data.user_id}`, data)
+    .then((res) => res)
+    .catch((err) => err);
+
 export const updateSingleEntryById = async (data) =>
   await api
     .put("/entry/edit", data)

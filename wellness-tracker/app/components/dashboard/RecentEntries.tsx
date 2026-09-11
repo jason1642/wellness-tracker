@@ -1,5 +1,8 @@
 import * as React from "react";
-import { updateSingleEntryById } from "../../api-helpers/tracker-api";
+import {
+  updateSingleEntryById,
+  createNewEntry,
+} from "../../api-helpers/tracker-api";
 
 interface IRecentEntriesProps {
   // eslint-disable-next-line
@@ -7,6 +10,9 @@ interface IRecentEntriesProps {
   // eslint-disable-next-line
   userData: any;
 }
+// This is the createNewEntry function, add user input into the data prop aswell as user_id
+// export const createNewEntry = async (data) =>
+//  await api.post(`/entry/${data.user_id}`).then(res=>res).catch(err=>err)
 
 const MOOD_STYLE = {
   happy: { emoji: "🙂", color: "#7FB8A0" },
@@ -56,6 +62,18 @@ function toDateInputValue(iso: string) {
 const inputClass =
   "w-full rounded-md border border-[#2C303A] bg-[#0F1116] px-2.5 py-1.5 text-sm text-[#F2F3F5] outline-none focus:border-[#5B8DEF]";
 const labelClass = "text-[11px] uppercase tracking-wide text-[#5F6570]";
+function todayInputValue() {
+  return new Date().toISOString().slice(0, 10);
+}
+const emptyFormValues = {
+  date: todayInputValue(),
+  notes: "",
+  mood: "neutral",
+  hours_slept: "",
+  weight: "",
+  screen_time: "",
+  medication: "",
+};
 
 const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   entryData,
@@ -67,15 +85,23 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const [formValues, setFormValues] = React.useState<any>({});
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState<string | null>(null);
-
-  // Local copy of entries so a successful save reflects immediately without
-  // waiting on a parent refetch. Resyncs whenever new entryData comes in.
+  const [isCreating, setIsCreating] = React.useState(false);
+  const [newEntryValues, setNewEntryValues] =
+    React.useState<any>(emptyFormValues);
+  const [isCreatingSave, setIsCreatingSave] = React.useState(false);
+  const [createError, setCreateError] = React.useState<string | null>(null);
   const [entries, setEntries] = React.useState(entryData.entries);
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(entryData.entries);
-    // console.log("entry set state", entryData);
+    console.log("entry set state", entryData);
   }, [entryData]);
+
+  const sortedEntries = React.useMemo(() => {
+    return [...entries].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+  }, [entries]);
 
   const toggleRow = (i: number) => {
     // collapsing the row should also cancel any in-progress edit on it
@@ -102,6 +128,23 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const cancelEdit = () => {
     setEditIndex(null);
     setSaveError(null);
+  };
+  const handleNewEntryFieldChange = (field: string, value: string) => {
+    setNewEntryValues((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const openCreateForm = () => {
+    // opening a new-entry form should colapse any expanded /editing row
+    setOpenIndex(null);
+    setEditIndex(null);
+    setCreateError(null);
+    setNewEntryValues(emptyFormValues);
+    setIsCreating(true);
+  };
+
+  const cancelCreate = () => {
+    setIsCreating(false);
+    setCreateError(null);
   };
 
   const handleFieldChange = (field: string, value: string) => {
@@ -152,15 +195,226 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
     }
   };
 
+  const saveNewEntry = async () => {
+    setIsCreatingSave(true);
+    setCreateError(null);
+
+    const payload = {
+      date: new Date(newEntryValues.date).toISOString(),
+      notes: newEntryValues.notes,
+      mood: newEntryValues.mood,
+      hours_slept: Number(newEntryValues.hours_slept),
+      weight: Number(newEntryValues.weight),
+      screen_time: Number(newEntryValues.screen_time),
+      medication: Number(newEntryValues.medication),
+    };
+
+    try {
+      const created = await createNewEntry({
+        user_id: userData._id,
+        ...payload,
+      });
+      // console.log("this is the created entry", payload);
+      // Fall back to a locally-generated temp id if the API response doesn't
+      // hand back the new entry's real _id for some reason.
+      const returnedEntries = created?.data?.entries;
+
+      const createdEntry =
+        returnedEntries && returnedEntries.length > 0
+          ? returnedEntries[returnedEntries.length - 1]
+          : { ...payload, _id: `temp-${Date.now()}` };
+
+      setEntries((prev) => [createdEntry, ...prev]);
+      // if (created?.data?.entries) {
+      //   setEntries(created.data.entries);
+      // }
+      console.log("!!!this is the entries state after creation", entries);
+      setIsCreating(false);
+      // eslint-disable-next-line
+    } catch (err: any) {
+      setCreateError(err?.message || "Failed to create entry. Try again.");
+    } finally {
+      setIsCreatingSave(false);
+    }
+  };
+
+  // sort entries by date, not date created
+  // right now the user can create notes with dates in the future - fix later
   return (
     <div className="min-h-screen bg-[#111318] p-8 font-[Inter,-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]">
       <div className="mx-auto max-w-[640px] rounded-xl border border-[#262A33] bg-[#181B22] px-[22px] py-5">
-        <h2 className="m-0 mb-4 text-base font-semibold text-[#F2F3F5]">
-          Recent entries
-        </h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="m-0 text-base font-semibold text-[#F2F3F5]">
+            Recent entries
+          </h2>
+          <button
+            type="button"
+            onClick={isCreating ? cancelCreate : openCreateForm}
+            className="flex items-center gap-1.5 rounded-md bg-[#7FB8A0] px-3 py-1.5 text-xs font-medium text-[#0F1116] transition-colors hover:bg-[#6FA890]"
+          >
+            {isCreating ? (
+              "Cancel"
+            ) : (
+              <>
+                <svg
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+                </svg>
+                New entry
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* entry form to create not edit*/}
+        {isCreating && (
+          <div className="mb-4 rounded-lg border border-[#262A33] bg-[#14161C] px-4 py-3.5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+              <div>
+                <label className={labelClass} htmlFor="new-date">
+                  Date
+                </label>
+                <input
+                  id="new-date"
+                  type="date"
+                  className={`${inputClass} mt-1`}
+                  value={newEntryValues.date}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("date", e.target.value)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="new-mood">
+                  Mood
+                </label>
+                <select
+                  id="new-mood"
+                  className={`${inputClass} mt-1 capitalize`}
+                  value={newEntryValues.mood}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("mood", e.target.value)
+                  }
+                >
+                  {MOOD_OPTIONS.map((m) => (
+                    <option key={m} value={m} className="capitalize">
+                      {m}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="new-sleep">
+                  Hours slept
+                </label>
+                <input
+                  id="new-sleep"
+                  type="number"
+                  step="0.1"
+                  className={`${inputClass} mt-1`}
+                  value={newEntryValues.hours_slept}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("hours_slept", e.target.value)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="new-weight">
+                  Weight (lbs)
+                </label>
+                <input
+                  id="new-weight"
+                  type="number"
+                  step="0.1"
+                  className={`${inputClass} mt-1`}
+                  value={newEntryValues.weight}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("weight", e.target.value)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="new-medication">
+                  Medication
+                </label>
+                <input
+                  id="new-medication"
+                  type="number"
+                  className={`${inputClass} mt-1`}
+                  value={newEntryValues.medication}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("medication", e.target.value)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="new-screen-time">
+                  Screen time (min)
+                </label>
+                <input
+                  id="new-screen-time"
+                  type="number"
+                  className={`${inputClass} mt-1`}
+                  value={newEntryValues.screen_time}
+                  onChange={(e) =>
+                    handleNewEntryFieldChange("screen_time", e.target.value)
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="mt-3 border-t border-[#24272F] pt-3">
+              <label className={labelClass} htmlFor="new-notes">
+                Notes
+              </label>
+              <textarea
+                id="new-notes"
+                rows={2}
+                className={`${inputClass} mt-1 resize-none`}
+                value={newEntryValues.notes}
+                onChange={(e) =>
+                  handleNewEntryFieldChange("notes", e.target.value)
+                }
+              />
+            </div>
+
+            {createError && (
+              <div className="mt-3 text-xs text-[#D97757]">{createError}</div>
+            )}
+
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                disabled={isCreatingSave}
+                onClick={saveNewEntry}
+                className="rounded-md bg-[#7FB8A0] px-3 py-1.5 text-xs font-medium text-[#0F1116] transition-colors hover:bg-[#6FA890] disabled:opacity-50"
+              >
+                {isCreatingSave ? "Saving..." : "Save entry"}
+              </button>
+              <button
+                type="button"
+                disabled={isCreatingSave}
+                onClick={cancelCreate}
+                className="rounded-md border border-[#2C303A] px-3 py-1.5 text-xs font-medium text-[#C7CBD3] transition-colors hover:bg-[#1D212B] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col">
-          {entries.map((entry, i) => {
+          {sortedEntries.map((entry, i) => {
             const mood = MOOD_STYLE[entry.mood] || MOOD_STYLE.neutral;
             const isOpen = openIndex === i;
             const isEditing = editIndex === i;
@@ -222,7 +476,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                   </svg>
                 </button>
 
-                {/* Expanded panel: read-only view or edit form */}
+                {/* drop down read only view or edit form */}
                 {isOpen && (
                   <div className="mb-3 rounded-lg bg-[#14161C] px-4 py-3.5">
                     {!isEditing ? (

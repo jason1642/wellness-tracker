@@ -29,7 +29,7 @@ const createEntry = async (req: Request, res: Response) => {
     let user = await User.findOne({ _id: req.params.user_id });
 
     if (user === null) return res.status(404).send("User does not exist");
-    console.log(req.body);
+    console.log("this is request body", req.body);
     const { date, notes, mood, hours_slept, medication, weight, screen_time } =
       req.body;
     console.log(notes);
