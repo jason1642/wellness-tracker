@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const singleEntrySchema = new mongoose.Schema({
-  date: { type: Date, required: true },
+export const SingleEntrySchema = new mongoose.Schema({
+  date: { type: Date, required: true, default: Date.now },
   notes: { type: String, required: false, default: "" },
   mood: { type: String, required: false, default: "" },
   hours_slept: { type: Number, required: false, default: 7 },
@@ -19,7 +19,7 @@ const entrySchema = new Schema({
     required: true,
   },
   entries: {
-    type: [singleEntrySchema],
+    type: [SingleEntrySchema],
     default: [],
   },
 });
