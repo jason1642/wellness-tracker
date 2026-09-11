@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: false, default: "user" },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
   city: { type: String, required: false },

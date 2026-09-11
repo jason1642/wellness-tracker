@@ -74,7 +74,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(entryData.entries);
-    console.log("entry set state", entryData);
+    // console.log("entry set state", entryData);
   }, [entryData]);
 
   const toggleRow = (i: number) => {

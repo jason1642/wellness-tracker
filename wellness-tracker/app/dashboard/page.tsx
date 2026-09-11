@@ -44,7 +44,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
     console.log("dashboard");
   }, []);
 
-  //  console.log(userData.data)
+  console.log(userData && trackerData);
 
   return (
     <div className="bg-[#111318]  p-4 rounded-lg">

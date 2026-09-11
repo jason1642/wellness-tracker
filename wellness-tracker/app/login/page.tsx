@@ -85,7 +85,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
 
           <p className="mt-6 text-center text-sm text-[#8B92A1]">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-[#7FB8A0] hover:underline">
+            <Link href="/register" className="text-[#7FB8A0] hover:underline">
               Sign up here
             </Link>
           </p>

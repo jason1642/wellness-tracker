@@ -1,10 +1,14 @@
 import { Router, type Request, type Response } from "express";
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import mongoose from "mongoose";
+import Tracker from "../models/tracker.ts";
+import Entry from "../models/entry.ts";
 import _ from "lodash";
 import User from "../models/user.ts";
+import EntryData from "../scripts/entry-data.json" with { type: "json" };
+import { generateSleepData } from "../scripts/create-sleep-data.ts";
 const router = Router();
 
 // Create user
@@ -13,35 +17,52 @@ const createUser = async (req: Request, res: Response) => {
   let secret;
   //Check if user already exists
   let user = await User.findOne({
-    $or: [{ username: req.body.username }, { email: req.body.email }],
+    email: req.body.email,
   });
 
   //
   if (user) {
-    return res.status(400).send("That username or email is already taken.");
+    return res.status(400).send("That email is already taken.");
   }
 
   try {
-    user = await new User(
-      _.assign(_.pick(req.body, ["username", "email", "password"])),
-    );
+    const newUser: InstanceType<typeof User> = new User({
+      _id: new mongoose.Types.ObjectId(),
+      username: req.body.email,
+      email: req.body.email,
+      created_at: new Date(),
+      // _id: newPostId
+    });
+    const newEntry: InstanceType<typeof Entry> = new Entry({
+      user_id: newUser._id,
+      entries: EntryData,
+    });
 
+    const sleepData = generateSleepData(7);
+    const newTracker: InstanceType<typeof Tracker> = new Tracker({
+      user_id: newUser._id,
+      _id: newUser.tracker_id,
+      sleep_data: sleepData,
+      water_data: Math.floor(Math.random() * 15) + 1,
+      steps_data: Math.floor(Math.random() * 10000) + 1,
+      calories_data: Math.floor(Math.random() * 2500) + 1,
+    });
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    await user.save();
+    newUser.username = req.body.email;
+    newUser.password = await bcrypt.hash(newUser.password, salt);
+    newUser.tracker_id = newTracker._id;
+    newUser.entry_id = newEntry._id;
+    await Entry.insertOne(newEntry);
+    await Tracker.insertOne(newTracker);
+    await newUser.save();
     console.log("RUNNING SAVE");
 
-    secret = process.env.TOKEN_SECRET && process.env.TOKEN_SECRET;
-
-    const token = jwt.sign({ _id: user._id }, secret);
-
-    return res
-      .header("x-auth-token", token)
+    const token = jwt.sign({ _id: newUser._id }, process.env.TOKEN_SECRET);
+    console.log("this is token " + token);
+    res
+      .header({ "x-auth-token": token, authorization: `Bearer ${token}` })
       .send(
-        _.assign(
-          _.pick(user, ["_id", "username", "email", "password", "created_at"]),
-          { token: token },
-        ),
+        _.assign({ token: token }, _.pick(user, ["_id", "email", "password"])),
       );
   } catch (errors) {
     console.log(errors);

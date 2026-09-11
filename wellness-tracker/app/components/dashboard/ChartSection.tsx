@@ -69,11 +69,11 @@ const ChartSection = ({
   const [sleepData, setSleepData] = React.useState<Array<any>>();
 
   React.useEffect(() => {
-    console.log("Recent entries", trackerData);
+    // console.log("Recent entries", trackerData);
     aggregateByDay(trackerData.sleep_data)
       .then((res) => {
         setSleepData(res);
-        console.log("this is the aggregate sleep data", res);
+        // console.log("this is the aggregate sleep data", res);
       })
       .catch((err) => {
         console.log("sleep data error");

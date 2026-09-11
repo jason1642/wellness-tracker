@@ -20,6 +20,8 @@ export const createUser = async (input: UserInput) =>
     .then((res) => {
       // console.log(res)
       // window.location.reload();
+      localStorage.setItem("authToken", res.data.token);
+      api.defaults.headers.common.authorization = `Bearer ${res.data.token}`;
       return res;
     })
     .catch((err) => {
