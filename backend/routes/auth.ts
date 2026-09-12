@@ -58,14 +58,11 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/verify", async (req, res, next) => {
   console.log(req.body.token, "this is the verify token");
   try {
-    const user: any = jwt.verify(req.body.token, process.env.TOKEN_SECRET);
+    let user: any = jwt.verify(req.body.token, process.env.TOKEN_SECRET);
     if (!user) return res.status(403).send("invalid token");
     console.log(user);
+    user = await User.findOne({ _id: user._id }).lean();
 
-    // Mongodb error when setting user to active
-    // console.log(userData)
-    // userData.active = true
-    // await userData.save()
     const [tracker, entry] = await Promise.all([
       Tracker.findOne({ user_id: user._id }),
       Entry.findOne({ user_id: user._id }),

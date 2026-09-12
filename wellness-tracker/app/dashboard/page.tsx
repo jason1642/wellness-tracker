@@ -1,59 +1,35 @@
 "use client";
 import * as React from "react";
-import {
-  getTrackerByUserId,
-  getEntriesByUserId,
-} from "../api-helpers/tracker-api";
 import TopRow from "../components/dashboard/TopRow";
 import ChartSection from "../components/dashboard/ChartSection";
 import RecentEntries from "../components/dashboard/RecentEntries";
 import { verifyUser } from "../api-helpers/user-api";
+import { useQuery } from "@tanstack/react-query";
+
 // eslint-disable-next-line
 interface IDashboardProps {}
 
 const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
-  const [userData, setUserData] = React.useState();
-  const [trackerData, setTrackerData] = React.useState();
-  const [entryData, setEntryData] = React.useState();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["verifyUser"],
+    queryFn: verifyUser,
+  });
 
-  React.useEffect(() => {
-    verifyUser()
-      .then((res) => {
-        console.log("dashboardVerifyUser", res.data);
-        setUserData(res.data);
-        getTrackerByUserId(res.data._id)
-          .then((res1) => {
-            console.log("tracker data: ", res1);
-            setTrackerData(res1.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        getEntriesByUserId(res.data._id)
-          .then((res2) => {
-            console.log("entry data", res2.data);
-            setEntryData(res2.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    console.log("dashboard");
-  }, []);
+  if (isLoading) return <div>loading...</div>;
+  if (error || !data) return <div>Not authenticated</div>;
 
-  console.log(userData && trackerData);
+  const { tracker, entry, ...userData } = data.data;
+
+  console.log(userData && tracker);
 
   return (
     <div className="bg-[#111318]  p-4 rounded-lg">
       <h2>Dashboard</h2>
-      {userData && trackerData ? (
+      {userData && tracker ? (
         <div className="flex flex-col ">
-          <TopRow trackerData={trackerData} />
-          <ChartSection trackerData={trackerData} />
-          <RecentEntries userData={userData} entryData={entryData} />
+          <TopRow trackerData={tracker} />
+          <ChartSection trackerData={tracker} />
+          <RecentEntries userData={userData} entryData={entry} />
         </div>
       ) : (
         <div> loading... </div>
