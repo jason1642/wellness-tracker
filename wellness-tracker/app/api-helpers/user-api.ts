@@ -58,16 +58,10 @@ export const loginUser = async (input: UserInput) =>
 
 export const verifyUser = async () => {
   const token = localStorage.getItem("authToken");
-  return api
-    .post("/auth/verify", { token: token })
-    .then((res) => {
-      console.log("verify user res", res);
-      return res;
-    })
-    .catch((err) => {
-      console.log("verify user err", err);
-      return err;
-    });
+  return api.post("/auth/verify", { token: token }).then((res) => {
+    console.log("verify user res", res);
+    return res;
+  });
 };
 
 // logout
