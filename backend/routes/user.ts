@@ -117,4 +117,36 @@ const getOneUserByEmail = async (req: Request, res: Response) => {
 };
 router.get("/find-by-email/:email", getOneUserByEmail);
 
+const getTrackerEntryUserData = async (req: Request, res: Response) => {
+  try {
+    const { user_id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      return res.status(400).send("Invalid user_id");
+    }
+
+    const user = await User.findOne({ _id: user_id });
+    if (!user) return res.status(404).send("User does not exist");
+    console.log("full data user only", user);
+    // promise.all will make both database searches run at the same time rather than individual awaits
+    const [tracker, entry] = await Promise.all([
+      Tracker.findOne({ user_id }),
+      Entry.findOne({ user_id }),
+    ]);
+
+    if (!tracker && !entry) {
+      return res
+        .status(404)
+        .send("No tracker or entry data found for this user");
+    }
+    res.status(200).send({
+      ...user,
+      tracker,
+      entry,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("failed to fetch dashboard data");
+  }
+};
+router.get("/full-data/:user_id", getTrackerEntryUserData);
 export default router;

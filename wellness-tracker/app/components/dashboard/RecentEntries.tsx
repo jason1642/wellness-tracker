@@ -91,6 +91,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const [isCreatingSave, setIsCreatingSave] = React.useState(false);
   const [createError, setCreateError] = React.useState<string | null>(null);
   const [entries, setEntries] = React.useState(entryData.entries);
+
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(entryData.entries);

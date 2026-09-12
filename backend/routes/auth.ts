@@ -3,6 +3,8 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import _ from "lodash";
+import Tracker from "../models/tracker.ts";
+import Entry from "../models/entry.ts";
 import "dotenv/config";
 
 const authRouter = express.Router();
@@ -56,18 +58,24 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/verify", async (req, res, next) => {
   console.log(req.body.token, "this is the verify token");
   try {
-    const user = jwt.verify(req.body.token, process.env.TOKEN_SECRET);
+    const user: any = jwt.verify(req.body.token, process.env.TOKEN_SECRET);
     if (!user) return res.status(403).send("invalid token");
-    console.log(user._id);
-    const returnUser = await User.findById(user._id);
-    console.log(returnUser);
-    if (!returnUser) return res.status(401).send("User is not found");
+    console.log(user);
 
     // Mongodb error when setting user to active
     // console.log(userData)
     // userData.active = true
     // await userData.save()
-    return res.send(returnUser);
+    const [tracker, entry] = await Promise.all([
+      Tracker.findOne({ user_id: user._id }),
+      Entry.findOne({ user_id: user._id }),
+    ]);
+
+    return res.status(200).send({
+      ...user,
+      tracker,
+      entry,
+    });
   } catch (err) {
     return res.status(403).send("Unable to verify user");
   }
