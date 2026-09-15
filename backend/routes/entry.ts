@@ -4,6 +4,7 @@ import "dotenv/config";
 import _ from "lodash";
 import Entry from "../models/entry.ts";
 import User from "../models/user.ts";
+import { send } from "process";
 const router = Router();
 
 // Find entry list by user id
@@ -88,5 +89,23 @@ const updateEntry = async (req: Request, res: Response) => {
 };
 
 router.put("/edit", updateEntry);
+
+const deleteEntry = async (req: Request, res: Response) => {
+  const { user_id } = req.body;
+  const existing = await Entry.findOne({
+    user_id,
+    "entries._id": req.params.entry_id,
+  });
+  if (!existing) return res.status(404).send("user or entry not found");
+  // using $unset will make the value null instead of deleting it entirely from the array
+  const result = await Entry.findOneAndUpdate(
+    { user_id },
+    { $pull: { entries: { _id: req.params.entry_id } } },
+    { new: true },
+  );
+  res.send(result);
+};
+
+router.delete("/delete/:entry_id", deleteEntry);
 
 export default router;

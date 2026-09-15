@@ -86,8 +86,8 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [isCreating, setIsCreating] = React.useState(false);
-  const [newEntryValues, setNewEntryValues] =
-    React.useState<any>(emptyFormValues);
+
+  const [newEntryValues, setNewEntryValues] = React.useState(emptyFormValues);
   const [isCreatingSave, setIsCreatingSave] = React.useState(false);
   const [createError, setCreateError] = React.useState<string | null>(null);
   const [entries, setEntries] = React.useState(entryData.entries);
