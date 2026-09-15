@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   updateSingleEntryById,
   createNewEntry,
+  deleteEntry,
 } from "../../api-helpers/tracker-api";
 
 interface IRecentEntriesProps {
@@ -86,7 +87,8 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [isCreating, setIsCreating] = React.useState(false);
-
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [deleteError, setDeleteError] = React.useState<string | null>(null);
   const [newEntryValues, setNewEntryValues] = React.useState(emptyFormValues);
   const [isCreatingSave, setIsCreatingSave] = React.useState(false);
   const [createError, setCreateError] = React.useState<string | null>(null);
@@ -238,7 +240,27 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
       setIsCreatingSave(false);
     }
   };
+  // eslint-disable-next-line
+  const handleDelete = async (entry: any) => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    console.log(entry);
+    console.log(userData._id);
+    try {
+      await deleteEntry({
+        user_id: userData._id,
+        entry_id: entry._id,
+      });
 
+      setEntries((prev) => prev.filter((e) => e._id !== entry._id));
+      setOpenIndex(null); // collapse the row since it no longer exists
+      // eslint-disable-next-line
+    } catch (err: any) {
+      setDeleteError(err?.message || "Failed to delete entry. Try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
   // sort entries by date, not date created
   // right now the user can create notes with dates in the future - fix later
   return (
@@ -536,13 +558,29 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                           </dd>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => startEdit(i, entry)}
-                          className="mt-4 rounded-md border border-[#2C303A] px-3 py-1.5 text-xs font-medium text-[#C7CBD3] transition-colors hover:bg-[#1D212B]"
-                        >
-                          Edit entry
-                        </button>
+                        {deleteError && (
+                          <div className="mb-2 text-xs text-[#D97757]">
+                            {deleteError}
+                          </div>
+                        )}
+
+                        <div className="mt-4 flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => startEdit(i, entry)}
+                            className="rounded-md border border-[#2C303A] px-3 py-1.5 text-xs font-medium text-[#C7CBD3] transition-colors hover:bg-[#1D212B]"
+                          >
+                            Edit entry
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isDeleting}
+                            onClick={() => handleDelete(entry)}
+                            className="rounded-md border border-[#2C303A] px-3 py-1.5 text-xs font-medium text-[#D97757] transition-colors hover:bg-[#1D212B] disabled:opacity-50"
+                          >
+                            {isDeleting ? "Deleting..." : "Delete entry"}
+                          </button>
+                        </div>
                       </>
                     ) : (
                       <div>

@@ -91,6 +91,7 @@ const updateEntry = async (req: Request, res: Response) => {
 router.put("/edit", updateEntry);
 
 const deleteEntry = async (req: Request, res: Response) => {
+  console.log(req.body);
   const { user_id } = req.body;
   const existing = await Entry.findOne({
     user_id,

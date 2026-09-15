@@ -25,6 +25,12 @@ export const createNewEntry = async (data) =>
     .then((res) => res)
     .catch((err) => err);
 
+export const deleteEntry = async (data) =>
+  await api
+    .delete(`/entry/delete/${data.entry_id}`, { data: data })
+    .then((res) => res)
+    .catch((err) => err);
+
 export const updateSingleEntryById = async (data) =>
   await api
     .put("/entry/edit", data)
