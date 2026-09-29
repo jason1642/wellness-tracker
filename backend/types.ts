@@ -1,11 +1,3 @@
-interface TrackerModel {
-  user_id: string;
-  // eslint-disable-next-line
-  sleep_data: any;
-  steps_data: number;
-  calories_data: number;
-  water_data: number;
-}
 // This is the 10 minute intervals that populate the data value in zealthys api
 interface SleepInterval {
   timestamp: string;
@@ -28,9 +20,4 @@ interface SleepSession {
   date: string;
 }
 
-export {
-  type TrackerModel,
-  type SleepInterval,
-  type SleepData,
-  type SleepSession,
-};
+export { type SleepInterval, type SleepData, type SleepSession };

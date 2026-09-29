@@ -36,3 +36,6 @@ export const updateSingleEntryById = async (data) =>
     .put("/entry/edit", data)
     .then((res) => res)
     .catch((err) => err);
+
+export const getSleepDataByUserId = async (user_id: string) =>
+  await api.get(`/sleep-data/${user_id}`);
