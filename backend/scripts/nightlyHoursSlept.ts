@@ -62,9 +62,27 @@ const createSleepSessions = ({ data }: SleepData): SleepSession[] => {
         totalSleepMinutes,
         hoursSlept: Math.round((totalSleepMinutes / 60) * 10) / 10,
         date: toUTCDateString(last.timestamp),
+        intervals: session,
       };
     })
     .filter((session) => session.totalSleepMinutes >= MIN_SESSION_MINUTES);
 };
+
+export async function fetchSleepSessionsForUser(
+  email: string,
+): Promise<SleepSession[]> {
+  const res = await fetch(
+    `https://zealthy-personal-wellness-tracker-a.vercel.app/sleep_data?email=${encodeURIComponent(
+      email,
+    )}`,
+  );
+
+  if (!res.ok) {
+    throw new Error(`Sleep API request failed: ${res.status}`);
+  }
+
+  const json: SleepData = await res.json();
+  return createSleepSessions(json);
+}
 
 export { createSleepSessions };

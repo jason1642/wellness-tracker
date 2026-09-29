@@ -18,6 +18,7 @@ interface SleepSession {
   hoursSlept: number;
   // this should date is the morning after the minutes start counting the night before
   date: string;
+  intervals: SleepInterval[];
 }
 
 export { type SleepInterval, type SleepData, type SleepSession };

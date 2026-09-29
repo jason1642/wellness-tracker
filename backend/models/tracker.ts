@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-  const sleepSchema = new mongoose.Schema({
- timestamp: { type: Date, required: true },
-        sleepMinutes: { type: Number, required: true }
-  })
+const sleepSchema = new mongoose.Schema({
+  timestamp: { type: Date, required: true },
+  sleepMinutes: { type: Number, required: true },
+});
 
 //   const waterSchema = new mongoose.Schema({
 //     timestamp: { type: Date, required: true },
@@ -21,28 +21,30 @@ const { Schema } = mongoose;
 //     stepCount: { type: Number, required: true }
 //   })
 
-
-
 const trackerSchema = new Schema({
-  user_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
-sleep_data: {
-    type: [sleepSchema],
-    default: []
-},
-water_data: {
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    required: true,
+  },
+  // sleep_data: {
+  //     type: [sleepSchema],
+  //     default: []
+  // },
+  water_data: {
     type: Number,
-    default: 15
-},
-calories_data: {
+    default: 15,
+  },
+  calories_data: {
     type: Number,
-    default: 2200
-},
-steps_data: {
+    default: 2200,
+  },
+  steps_data: {
     type: Number,
-    default: 8500
-}
+    default: 8500,
+  },
 });
 
-const Tracker = mongoose.model('Tracker', trackerSchema);
+const Tracker = mongoose.model("Tracker", trackerSchema);
 
 export default Tracker;

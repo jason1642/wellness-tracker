@@ -5,6 +5,7 @@ import User from "../models/user.ts";
 import Tracker from "../models/tracker.ts";
 import Entry from "../models/entry.ts";
 import EntryData from "./entry-data.json" with { type: "json" };
+import SleepData from "../models/sleepData.ts";
 // var jsonData = '{"persons":[{"name":"John","city":"New York"},{"name":"Phil","city":"Ohio"}]}';'
 
 console.log(process.env.MONGODB_USERNAME, "this is the process.env");
@@ -28,26 +29,12 @@ const close = async () => {
 };
 
 let documentsArray: any[] = [];
-const users = [
-  "john",
-  "karethel",
-  "lorinda",
-  "alice",
-  "walter",
-  "phillip",
-  "ryan",
-  "greg",
-  "bob",
-  "mary",
-  "ted",
-  "chris",
-  "ming",
-  "jacob",
-];
+const users = ["alice", "bob", "ming"];
 const createManyDocuments = async () => {
   await User.deleteMany();
   await Tracker.deleteMany();
   await Entry.deleteMany();
+  await SleepData.deleteMany();
   let newUsers: InstanceType<typeof User>[] = [];
   let newTrackers: InstanceType<typeof Tracker>[] = [];
   let newEntries: InstanceType<typeof Entry>[] = [];
