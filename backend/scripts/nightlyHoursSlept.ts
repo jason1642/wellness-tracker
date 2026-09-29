@@ -68,13 +68,24 @@ const createSleepSessions = ({ data }: SleepData): SleepSession[] => {
     .filter((session) => session.totalSleepMinutes >= MIN_SESSION_MINUTES);
 };
 
+interface DateRange {
+  startTime: Date;
+  endTime: Date;
+}
+
 export async function fetchSleepSessionsForUser(
   email: string,
+  range?: DateRange,
 ): Promise<SleepSession[]> {
+  const params = new URLSearchParams({ email });
+
+  if (range) {
+    params.set("startTime", range.startTime.toISOString());
+    params.set("endTime", range.endTime.toISOString());
+  }
+  console.log(range);
   const res = await fetch(
-    `https://zealthy-personal-wellness-tracker-a.vercel.app/sleep_data?email=${encodeURIComponent(
-      email,
-    )}`,
+    `https://zealthy-personal-wellness-tracker-a.vercel.app/sleep_data?${params.toString()}`,
   );
 
   if (!res.ok) {
@@ -84,5 +95,3 @@ export async function fetchSleepSessionsForUser(
   const json: SleepData = await res.json();
   return createSleepSessions(json);
 }
-
-export { createSleepSessions };

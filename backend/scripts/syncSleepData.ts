@@ -21,9 +21,17 @@ function toISODate(dateOnly: string): Date {
   return new Date(`${dateOnly}T00:00:00.000Z`);
 }
 
-function sameCalendarDate(a: Date, b: Date): boolean {
+const sameCalendarDate = (a: Date, b: Date): boolean => {
   return a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
-}
+};
+
+const getOneMonthRange = () => {
+  const endTime = new Date();
+  const startTime = new Date(endTime);
+  startTime.setDate(startTime.getDate() - 30);
+  //   Important - end time should be a date further in the past than start time
+  return { startTime: endTime, endTime: startTime };
+};
 
 // This will sync users based on emails to fetch sleep data from zealthys api and
 // incorporate it within this database, it can be used at any point. im not sure if i should
@@ -35,10 +43,11 @@ function sameCalendarDate(a: Date, b: Date): boolean {
 
 const syncUser = async (user: InstanceType<typeof User>) => {
   console.log(`Syncing sleep data for ${user.email}...`);
+  const range = getOneMonthRange();
 
   let sessions;
   try {
-    sessions = await fetchSleepSessionsForUser(user.email);
+    sessions = await fetchSleepSessionsForUser(user.email, range);
   } catch (err) {
     console.error(`  Failed to fetch sleep data for ${user.email}:`, err);
     return;
