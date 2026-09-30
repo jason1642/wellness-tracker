@@ -8,7 +8,8 @@ frontend and backend run on separate folders, run npm i in both root directories
 
 Front end
 ```bash
-cd wellness-tracker && npm run dev
+/// inside /wellness-tracker
+npm run dev
 ```
 
 Back End
@@ -34,7 +35,7 @@ universal login input - email: alice@email.net  password: password
 libraries - bcrypt, jsonwebtoken, react hook forms, recharts, tailwindcss
 Features - Login, register, dashboard (bar chart for sleep data visualization, editable entry section).
 
-<img width="1152" height="1215" alt="Screenshot 2026-09-10 at 6 26 17 PM" src="https://github.com/user-attachments/assets/5636dd8c-0fa4-408e-a322-86b0b1aab3d2" />
+<img width="850" height="850" alt="Screenshot 2026-09-30 at 5 00 41 PM" src="https://github.com/user-attachments/assets/6fc9d47e-906a-445a-bc83-ca9b222a0c69" />
 
 Notes - It is assumed sleep and step data come from a device or a strict 3rd party source so i will not allow the user to make 
 changes to that data.
@@ -61,7 +62,7 @@ Users = {
     entry_id: object_id - reference to Entry collection
 }
 Entries = {
-    _id: object_id 
+    _id: object_id,
     user_id: object_id - reference to the User HTMLAllCollection,
     entries: array of daily entries: [
         {
