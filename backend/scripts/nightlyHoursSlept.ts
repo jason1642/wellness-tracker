@@ -9,7 +9,13 @@ import {
 // Now that dummy data isnt being created where it was hardcoded to make sure each night always had long stretches
 // of 10 min intervals, this data has long stretches of numbers less than 10 which doesnt really make sense but is fine
 // Displaying this data can be the same just having each point on the chart represent total hours slept that night
-
+const getOneMonthRange = () => {
+  const endTime = new Date();
+  const startTime = new Date(endTime);
+  startTime.setDate(startTime.getDate() - 30);
+  //   Important - end time should be a date further in the past than start time
+  return { startTime: endTime, endTime: startTime };
+};
 // how many 0 mins of sleep max before its seen as no longer asleep
 const MAX_GAP_INTERVALS = 1;
 const MIN_SESSION_MINUTES = 30;
@@ -82,6 +88,10 @@ export async function fetchSleepSessionsForUser(
   if (range) {
     params.set("startTime", range.startTime.toISOString());
     params.set("endTime", range.endTime.toISOString());
+  } else {
+    const oneMonth = getOneMonthRange();
+    params.set("startTime", oneMonth.startTime.toISOString());
+    params.set("endTime", oneMonth.endTime.toISOString());
   }
   console.log(range);
   const res = await fetch(

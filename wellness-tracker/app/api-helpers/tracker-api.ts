@@ -38,4 +38,4 @@ export const updateSingleEntryById = async (data) =>
     .catch((err) => err);
 
 export const getSleepDataByUserId = async (user_id: string) =>
-  await api.get(`/sleep-data/${user_id}`);
+  await api.get(`/sleep_data/${user_id}`);

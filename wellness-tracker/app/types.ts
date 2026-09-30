@@ -11,11 +11,6 @@ interface SleepInterval {
   timestamp: string;
   sleepMinutes: number;
 }
-// https://zealthy-personal-wellness-tracker-a.vercel.app/sleep_data?email=alice@email.net
-interface SleepData {
-  user: { email: string };
-  data: SleepInterval[];
-}
 
 // This is a single night session that is used to group up minutes and calculate total minutes
 // slept each night
@@ -26,8 +21,13 @@ interface SleepSession {
   hoursSlept: number;
   // this should date is the morning after the minutes start counting the night before
   date: string;
+  intervals: SleepInterval[];
 }
-
+// https://zealthy-personal-wellness-tracker-a.vercel.app/sleep_data?email=alice@email.net
+interface SleepData {
+  user: { email: string };
+  sleepSessions: SleepSession[];
+}
 export {
   type TrackerModel,
   type SleepInterval,
