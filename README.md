@@ -106,11 +106,15 @@ SleepData = {
 
 backend - 
 seed scripts (create user, seed sleep data for each automatically)
-Must run/rerun user seed script first before sleep data script
+Must run/rerun user seed script first before sleep data script.
+Tracker collection was retired to just merge its data into the entries collection so all daily info can be tracked there. Sleep data now has its own collection, where sleep sessions are recorded via the zealthy api, syncing up occasionally and parsing a big array of values into more useful ones organizing them by date and still including those intervals within them.
 
 
 
 Revision changes 
     - Instead of generating sleep data ourselves, use zealthy 3rd party api to add sleep and step data according to matching emails; sync users data they would have gotten using another app/device which zealthy 3rd party api would represent, parsing that data into "sessions" that parse many timestamp/count values into daily snapshot totals to track progress/behaviour.
+    - More ways to edit and view past data with the interactive calendar to show a specified dates data. The user can make edits via the daily snapshot section after selecting a date or choosing an entry row from the entries section. Sleep trends bar chart now features pagination to scroll back to previous weeks sleep hours values.
 
-Thoughts - 
+Thoughts -
+    Always more to add and revise but it is hard to make the dashboard look nice without more track worthy items. I can probably seed data during the sync scripts to populate empty fields. More features i would add is setting up a sleep goal, more user friendly buttons and ui fields to add to todays entries, especially notes and water with a bit new note button and plus minus buttons to change todays water. entry section can look alot better and user friendly but it is atleast functional. I should include either a better date selected day snapshot or date search/pagination in the entries section. 
+    Syncing data can be done manually within the console, but i can also do it daily automatically to sync with zealthys api, uploading only newer date data, or data from a date specified that has data missing up to todays date. I still feel like the entry collection needs a bit more work, but it could just be that the only good data to work with is daily steps and the rest needs to be populated by the user or a seed script/function.
