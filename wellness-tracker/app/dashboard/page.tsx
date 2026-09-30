@@ -122,7 +122,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
           />
         </aside>
 
-        <main>
+        <main className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-1 flex-col gap-4">
             <TopRow entryData={entryData} />
             <ChartSection

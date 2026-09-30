@@ -174,12 +174,12 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
   };
 
   return (
-    <div className="bg-[#111318] p-4 rounded-lg">
+    <div className="rounded-xl border border-[#262A33] bg-[#181B22] p-4">
       <h2 className="mb-3 text-sm font-semibold text-[#8B92A1]">
         Daily snapshot
       </h2>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2">
         {metrics.map((metric) => {
           const isOpen = openMetric === metric.key;
           return (
@@ -187,17 +187,17 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
               key={metric.key}
               type="button"
               onClick={() => handleCardClick(metric)}
-              className={`flex flex-col items-start rounded-xl border px-4 py-3.5 text-left transition-colors ${
+              className={`flex min-w-0 flex-col items-start rounded-lg border px-3 py-2.5 text-left transition-colors ${
                 isOpen
-                  ? "border-[#7FB8A0] bg-[#181B22]"
-                  : "border-[#262A33] bg-[#181B22] hover:bg-[#1D212B]"
+                  ? "border-[#7FB8A0] bg-[#1D212B]"
+                  : "border-[#262A33] bg-[#14161C] hover:bg-[#1D212B]"
               }`}
             >
-              <span className="text-lg">{metric.icon}</span>
-              <span className="mt-2 text-lg font-semibold text-[#F2F3F5]">
+              <span className="text-base">{metric.icon}</span>
+              <span className="mt-1 w-full truncate text-base font-semibold text-[#F2F3F5]">
                 {metric.value}
               </span>
-              <span className="text-xs text-[#8B92A1]">
+              <span className="w-full truncate text-[11px] text-[#8B92A1]">
                 {metric.label} · {metric.subLabel}
               </span>
             </button>
