@@ -77,32 +77,30 @@ router.post("/:user_id", createEntry);
 const updateEntry = async (req: Request, res: Response) => {
   try {
     const { user_id, entry_id } = req.body;
-    const {
-      date,
-      notes,
-      mood,
-      medication,
-      weight,
-      screen_time,
-      steps,
-      water,
-      calories,
-    } = req.body;
+    const editableFields = [
+      "date",
+      "notes",
+      "mood",
+      "medication",
+      "weight",
+      "screen_time",
+      "steps",
+      "water",
+      "calories",
+    ];
+    const updates = Object.fromEntries(
+      editableFields
+        .filter((field) => Object.prototype.hasOwnProperty.call(req.body, field))
+        .map((field) => [`entries.$.${field}`, req.body[field]]),
+    );
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).send("No entry fields provided to update");
+    }
+
     const doc = await Entry.findOneAndUpdate(
       { user_id, "entries._id": entry_id },
-      {
-        $set: {
-          "entries.$.date": date,
-          "entries.$.notes": notes,
-          "entries.$.mood": mood,
-          "entries.$.medication": medication,
-          "entries.$.weight": weight,
-          "entries.$.screen_time": screen_time,
-          "entries.$.steps": steps,
-          "entries.$.water": water,
-          "entries.$.calories": calories,
-        },
-      },
+      { $set: updates },
       { new: true }, // returns the updated doc instead of the original
     );
 
