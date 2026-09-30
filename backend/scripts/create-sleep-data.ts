@@ -10,9 +10,7 @@ interface SleepEntry {
 console.log(process.env.MONGODB_USERNAME, "this is the process.env");
 const connect = async () =>
   await mongoose
-    .connect(
-      `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@portfolio-website.halgu.mongodb.net/zealthy`,
-    )
+    .connect(`${process.env.MONGODB_URI}`)
     .then((res) => {
       console.log("db connected ");
     })

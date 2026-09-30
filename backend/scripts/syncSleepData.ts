@@ -11,9 +11,7 @@ import {
 
 const connectToDatabase = async () =>
   await mongoose
-    .connect(
-      `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@portfolio-website.halgu.mongodb.net/zealthy`,
-    )
+    .connect(`${process.env.MONGODB_URI}`)
     .then((res) => {
       console.log("db connected ");
     })

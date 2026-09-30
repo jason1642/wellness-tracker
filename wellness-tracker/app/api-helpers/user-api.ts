@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://backend-production-acbe7.up.railway.app"
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
     : "http://localhost:3001";
 const api = axios.create({ baseURL: baseUrl });
 

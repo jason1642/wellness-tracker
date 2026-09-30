@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://backend-production-acbe7.up.railway.app"
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
     : "http://localhost:3001";
 
 const api = axios.create({ baseURL: baseUrl });
@@ -26,9 +26,7 @@ export const deleteEntry = async (data) =>
     .catch((err) => err);
 
 export const updateSingleEntryById = async (data) =>
-  await api
-    .patch("/entry", data)
-    .then((res) => res);
+  await api.patch("/entry", data).then((res) => res);
 
 export const getSleepDataByUserId = async (user_id: string) =>
   await api.get(`/sleep_data/${user_id}`);
