@@ -27,9 +27,8 @@ export const deleteEntry = async (data) =>
 
 export const updateSingleEntryById = async (data) =>
   await api
-    .put("/entry/edit", data)
-    .then((res) => res)
-    .catch((err) => err);
+    .patch("/entry", data)
+    .then((res) => res);
 
 export const getSleepDataByUserId = async (user_id: string) =>
   await api.get(`/sleep_data/${user_id}`);
