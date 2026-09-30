@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import { getEntriesByUserId } from "../api-helpers/entry-api";
 import TopRow from "../components/dashboard/TopRow";
@@ -70,12 +70,18 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
     [entryData, selectedKey],
   );
 
-  const selectedSleep = useMemo(
+  const selectedSteps = useMemo(
     () =>
-      // eslint-disable-next-line
-      sleepData?.find((s: any) => toDateKey(new Date(s.date)) === selectedKey),
-    [sleepData, selectedKey],
+      entryData?.find((s: any) => toDateKey(new Date(s.date)) === selectedKey),
+    [entryData, selectedKey],
   );
+  const selectedSleep = useMemo(() => {
+    console.log("SLEEP memo Data", sleepData);
+    // eslint-disable-next-line
+    return sleepData?.find(
+      (s: any) => toDateKey(new Date(s.date)) === selectedKey,
+    );
+  }, [sleepData, selectedKey]);
 
   const handleSaveField = async (
     field: keyof EntryModel,
@@ -103,7 +109,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
   }
   return (
     <div className="mx-auto w-full bg-[#111318]  max-w-7xl p-4 sm:p-6">
-      <h2 className="mb-4 text-lg font-semibold text-[#F2F3F5]">Dashboard</h2>
+      {/* <h2 className="mb-4 text-lg font-semibold text-[#F2F3F5]">Dashboard</h2> */}
 
       <div className="grid gap-4 lg:grid-cols-[288px_minmax(0,1fr)] lg:items-start">
         {/* Sidebar: everything driven by the selected date */}
@@ -113,24 +119,24 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
             onSelectDate={setSelectedDate}
             datesWithData={datesWithData}
           />
-          <DailySnapshot
-            key={selectedKey} // remounts on date change, which resets the open panel and draft state
-            selectedDate={selectedDate}
-            sleepHours={selectedSleep?.hours_slept}
-            todayEntry={selectedEntry}
-            onSaveField={handleSaveField}
-          />
+          <TopRow entryData={entryData} />
         </aside>
 
         <main className="flex min-w-0 flex-col gap-4">
-          <div className="flex flex-1 flex-col gap-4">
-            <TopRow entryData={entryData} />
-            <ChartSection
-              sleepSessions={sleepData ?? []}
-              // isLoading={isSleepLoading}
-            />
-            <RecentEntries userId={userData.data?._id} entryData={entryData} />
-          </div>
+          <DailySnapshot
+            key={selectedKey} // remounts on date change, which resets the open panel and draft state
+            selectedDate={selectedDate}
+            sleepHours={selectedSleep?.hoursSlept}
+            todayEntry={selectedEntry}
+            stepsToday={selectedSteps?.steps}
+            onSaveField={handleSaveField}
+          />
+
+          <ChartSection
+            sleepSessions={sleepData ?? []}
+            // isLoading={isSleepLoading}
+          />
+          <RecentEntries userId={userData.data?._id} entryData={entryData} />
         </main>
       </div>
     </div>

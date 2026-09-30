@@ -179,7 +179,7 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
         Daily snapshot
       </h2>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {metrics.map((metric) => {
           const isOpen = openMetric === metric.key;
           return (

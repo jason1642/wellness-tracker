@@ -28,6 +28,35 @@ const MOOD_STYLE = {
 
 const MOOD_OPTIONS = Object.keys(MOOD_STYLE);
 
+function dateParts(iso: string) {
+  const d = new Date(iso);
+  return {
+    weekday: d.toLocaleDateString(undefined, { weekday: "short" }),
+    day: d.getDate(),
+    month: d.toLocaleDateString(undefined, { month: "short" }),
+  };
+}
+
+const Metric = ({
+  icon,
+  value,
+  label,
+}: {
+  icon: string;
+  value: string;
+  label: string;
+}) => (
+  <div className="flex items-center gap-2 rounded-lg bg-[#14161C] px-2.5 py-1.5">
+    <span className="text-sm">{icon}</span>
+    <div className="leading-tight">
+      <div className="text-[13px] font-medium text-[#F2F3F5]">{value}</div>
+      <div className="text-[10px] uppercase tracking-wide text-[#5F6570]">
+        {label}
+      </div>
+    </div>
+  </div>
+);
+
 function formatDay(iso) {
   const d = new Date(iso);
   const today = new Date();
@@ -434,30 +463,45 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
         </div>
       )}
 
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2.5">
         {sortedEntries.map((entry, i) => {
           const mood = MOOD_STYLE[entry.mood] || MOOD_STYLE.neutral;
           const isOpen = openIndex === i;
           const isEditing = editIndex === i;
+          const { weekday, day, month } = dateParts(entry.date);
+          const hasSleep =
+            entry.hours_slept != null && entry.hours_slept !== "";
 
           return (
             <div
               key={entry._id ?? i}
-              className={i === 0 ? "border-t-0" : "border-t border-[#24272F]"}
+              className={`rounded-xl border transition-colors ${
+                isOpen
+                  ? "border-[#2C303A] bg-[#1A1D25]"
+                  : "border-[#24272F] bg-[#16181F] hover:border-[#2C303A] hover:bg-[#1A1D25]"
+              }`}
             >
               {/* Clickable row */}
               <button
                 type="button"
                 onClick={() => toggleRow(i)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center gap-3.5 py-3.5 text-left transition-colors hover:bg-[#1D212B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5B8DEF] rounded-md px-1 -mx-1"
+                className="flex w-full items-center gap-4 rounded-xl px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5B8DEF]"
               >
-                <div className="w-16 shrink-0 text-[13px] text-[#8B92A1]">
-                  {formatDay(entry.date)}
+                <div className="flex w-12 shrink-0 flex-col items-center rounded-lg bg-[#14161C] py-1.5">
+                  <span className="text-[10px] uppercase tracking-wide text-[#5F6570]">
+                    {weekday}
+                  </span>
+                  <span className="text-lg font-semibold leading-none text-[#F2F3F5]">
+                    {day}
+                  </span>
+                  <span className="mt-0.5 text-[10px] text-[#8B92A1]">
+                    {month}
+                  </span>
                 </div>
 
                 <div
-                  className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg text-[15px]"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl"
                   style={{ background: `${mood.color}22` }}
                   title={entry.mood}
                 >
@@ -465,18 +509,49 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-[#F2F3F5]">
+                  <div className="truncate text-[15px] font-medium text-[#F2F3F5]">
                     {entry.notes || "No note"}
                   </div>
-                  <div className="mt-0.5 text-xs capitalize text-[#8B92A1]">
-                    {entry.mood}
+                  <div className="mt-0.5 text-[15px] truncate text-[#8B92A1]">
+                    <span className="capitalize">
+                      {entry.mood || "No mood"}
+                    </span>
+                  </div>
+
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {entry.weight != null && entry.weight !== "" && (
+                      <Metric
+                        icon="⚖️"
+                        value={`${entry.weight} lbs`}
+                        label="Weight"
+                      />
+                    )}
+                    {entry.screen_time != null && entry.screen_time !== "" && (
+                      <Metric
+                        icon="📱"
+                        value={`${entry.screen_time} min`}
+                        label="Screen"
+                      />
+                    )}
+                    {entry.medication != null && entry.medication !== "" && (
+                      <Metric
+                        icon="💊"
+                        value={String(entry.medication)}
+                        label="Meds"
+                      />
+                    )}
                   </div>
                 </div>
 
-                <div className="min-w-[48px] shrink-0 text-right text-[13px] font-medium text-[#C7CBD3]">
+                <div className="flex shrink-0 items-center gap-3">
                   {entry.hours_slept != null ? `${entry.hours_slept}h` : "—"}
-                  <div className="text-[11px] font-normal text-[#5F6570]">
-                    slept
+                  <div className="text-right">
+                    <div className="text-xl font-semibold text-[#F2F3F5]">
+                      {hasSleep ? `${entry.hours_slept}h` : "—"}
+                    </div>
+                    <div className="text-[11px] uppercase tracking-wide text-[#5F6570]">
+                      slept
+                    </div>
                   </div>
                 </div>
 

@@ -6,6 +6,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  ReferenceLine,
 } from "recharts";
 import * as React from "react";
 import { SleepSession } from "../../types";
@@ -20,7 +21,14 @@ interface ChartDataPoint {
 }
 const PAGE_SIZE = 7;
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
+// this will be a number that changes the bar color depending on if the user met the hours slept goal or not
+const LOW_SLEEP_HOURS = 7.2;
+const BAR_COLORS = {
+  normal: "#0f2647",
+  normalLatest: "#7ba7e8",
+  low: "#4a2c2a",
+  lowLatest: "#D97757",
+};
 function mapSessionsToChartData(sessions: SleepSession[]): ChartDataPoint[] {
   return sessions.map((session) => {
     const date = new Date(session.date);
@@ -36,6 +44,7 @@ function mapSessionsToChartData(sessions: SleepSession[]): ChartDataPoint[] {
       fullDate: date.toLocaleDateString(undefined, {
         month: "short",
         day: "numeric",
+        timeZone: "UTC",
       }),
       hours: session.hoursSlept,
       durationLabel: `${wholeHours}h ${remainderMinutes}m`,
@@ -133,101 +142,108 @@ const ChartSection = ({
   return (
     <>
       {sleepSessions ? (
-        <Card>
-          <div className="bg-[#181B22] border border-neutral-800 rounded-2xl px-6 py-5 min-w-6xl mx-auto">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="text-xl font-medium text-neutral-50">
-                  Sleep trend
-                </p>
-                <p className="text-s text-neutral-500">{rangeLabel}</p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!canGoOlder}
-                  aria-label="Previous week"
-                  className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      d="M12.5 5l-5 5 5 5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPage((p) => p - 1)}
-                  disabled={!canGoNewer}
-                  aria-label="Next week"
-                  className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      d="M7.5 5l5 5-5 5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
+        // <Card>
+        <div className="min-w-0 overflow-hidden rounded-xl border border-[#262A33] bg-[#181B22] p-4 sm:p-5">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xl font-medium text-neutral-50">Sleep trend</p>
+              <p className="text-sm text-neutral-500">{rangeLabel}</p>
             </div>
-            <div className="h-28 min-h-70">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={pageData} barCategoryGap="20%">
-                  <XAxis
-                    dataKey="dayLabel"
-                    axisLine={false}
-                    tickLine={false}
-                    height={36}
-                    tick={renderAxisTick(pageData)}
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={!canGoOlder}
+                aria-label="Previous week"
+                className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M12.5 5l-5 5 5 5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#8a8a8a", fontSize: 12 }}
-                    width={32}
-                    tickFormatter={(value) => `${Math.floor(value)}h`}
-                    domain={[0, "dataMax + 1"]}
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPage((p) => p - 1)}
+                disabled={!canGoNewer}
+                aria-label="Next week"
+                className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M7.5 5l5 5-5 5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <Tooltip
-                    content={<ChartTooltip />}
-                    cursor={{ fill: "#ffffff", fillOpacity: 0.04 }}
-                  />
-                  <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
-                    {pageData.map((_, index) => (
-                      <Cell
-                        key={index}
-                        fill={
-                          page === 0 && index === pageData.length - 1
-                            ? "#7ba7e8"
-                            : "#0f2647"
-                        }
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                </svg>
+              </button>
             </div>
           </div>
-        </Card>
+          <div className="h-28 min-h-70">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={pageData} barCategoryGap="20%">
+                <ReferenceLine
+                  y={LOW_SLEEP_HOURS}
+                  stroke="#D97757"
+                  strokeOpacity={0.35}
+                  strokeDasharray="4 4"
+                />
+                <XAxis
+                  dataKey="dayLabel"
+                  axisLine={false}
+                  tickLine={false}
+                  height={36}
+                  tick={renderAxisTick(pageData)}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#8a8a8a", fontSize: 12 }}
+                  width={32}
+                  tickFormatter={(value) => `${Math.floor(value)}h`}
+                  domain={[0, "dataMax + 1"]}
+                />
+                <Tooltip
+                  content={<ChartTooltip />}
+                  cursor={{ fill: "#ffffff", fillOpacity: 0.04 }}
+                />
+                <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
+                  {pageData.map((point, index) => {
+                    const isLatest =
+                      page === 0 && index === pageData.length - 1;
+                    const isLow = point.hours < LOW_SLEEP_HOURS;
+                    const fill = isLow
+                      ? isLatest
+                        ? BAR_COLORS.lowLatest
+                        : BAR_COLORS.low
+                      : isLatest
+                        ? BAR_COLORS.normalLatest
+                        : BAR_COLORS.normal;
+                    return <Cell key={point.day} fill={fill} />;
+                  })}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       ) : (
+        // </Card>
         <Card>
           <div>Loading</div>
         </Card>

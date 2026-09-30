@@ -89,100 +89,100 @@ const Calendar: React.FunctionComponent<ICalendarProps> = ({
   }, [year, month, firstWeekday, daysInMonth]);
 
   return (
-    <Card>
-      <div className="w-full max-w-100 rounded-xl border border-[#262A33] bg-[#181B22] px-3 py-3">
-        <div className="mb-3 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={goToPrevMonth}
-            aria-label="Previous month"
-            className="rounded-md p-1.5 text-[#8B92A1] transition-colors hover:bg-[#1D212B] hover:text-[#F2F3F5]"
+    // <Card>
+    <div className="w-full max-w-100 rounded-xl border border-[#262A33] bg-[#181B22] px-3 py-3">
+      <div className="mb-3 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={goToPrevMonth}
+          aria-label="Previous month"
+          className="rounded-md p-1.5 text-[#8B92A1] transition-colors hover:bg-[#1D212B] hover:text-[#F2F3F5]"
+        >
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M12.5 5l-5 5 5 5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+            <path
+              d="M12.5 5l-5 5 5 5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
-          <span className="text-sm font-medium text-[#F2F3F5]">
-            {MONTH_NAMES[month]} {year}
-          </span>
+        <span className="text-sm font-medium text-[#F2F3F5]">
+          {MONTH_NAMES[month]} {year}
+        </span>
 
-          <button
-            type="button"
-            onClick={goToNextMonth}
-            aria-label="Next month"
-            className="rounded-md p-1.5 text-[#8B92A1] transition-colors hover:bg-[#1D212B] hover:text-[#F2F3F5]"
+        <button
+          type="button"
+          onClick={goToNextMonth}
+          aria-label="Next month"
+          className="rounded-md p-1.5 text-[#8B92A1] transition-colors hover:bg-[#1D212B] hover:text-[#F2F3F5]"
+        >
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M7.5 5l5 5-5 5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="mb-1 grid grid-cols-7 gap-1">
-          {WEEKDAY_LABELS.map((label) => (
-            <div key={label} className="text-center text-[11px] text-[#5F6570]">
-              {label}
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-1">
-          {cells.map((date, i) => {
-            if (!date) return <div key={`blank-${i}`} />;
-
-            const key = toDateKey(date);
-            const isSelected = isSameDay(date, selectedDate);
-            const isToday = isSameDay(date, today);
-            const isFuture = date.getTime() > maxDate.getTime();
-            const hasData = datesWithData?.has(key);
-
-            return (
-              <button
-                key={key}
-                type="button"
-                disabled={isFuture}
-                onClick={() => onSelectDate(date)}
-                className={`relative aspect-square rounded-md text-sm transition-colors ${
-                  isFuture
-                    ? "cursor-not-allowed text-[#3A3E47]"
-                    : isSelected
-                      ? "bg-[#7FB8A0] font-medium text-[#0F1116]"
-                      : isToday
-                        ? "border border-[#5F6570] text-[#F2F3F5] hover:bg-[#1D212B]"
-                        : "text-[#C7CBD3] hover:bg-[#1D212B]"
-                }`}
-              >
-                {date.getDate()}
-                {hasData && !isSelected && (
-                  <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#7FB8A0]" />
-                )}
-              </button>
-            );
-          })}
-        </div>
+            <path
+              d="M7.5 5l5 5-5 5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
-    </Card>
+
+      <div className="mb-1 grid grid-cols-7 gap-1">
+        {WEEKDAY_LABELS.map((label) => (
+          <div key={label} className="text-center text-[11px] text-[#5F6570]">
+            {label}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((date, i) => {
+          if (!date) return <div key={`blank-${i}`} />;
+
+          const key = toDateKey(date);
+          const isSelected = isSameDay(date, selectedDate);
+          const isToday = isSameDay(date, today);
+          const isFuture = date.getTime() > maxDate.getTime();
+          const hasData = datesWithData?.has(key);
+
+          return (
+            <button
+              key={key}
+              type="button"
+              disabled={isFuture}
+              onClick={() => onSelectDate(date)}
+              className={`relative aspect-square rounded-md text-sm transition-colors ${
+                isFuture
+                  ? "cursor-not-allowed text-[#3A3E47]"
+                  : isSelected
+                    ? "bg-[#7FB8A0] font-medium text-[#0F1116]"
+                    : isToday
+                      ? "border border-[#5F6570] text-[#F2F3F5] hover:bg-[#1D212B]"
+                      : "text-[#C7CBD3] hover:bg-[#1D212B]"
+              }`}
+            >
+              {date.getDate()}
+              {hasData && !isSelected && (
+                <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#7FB8A0]" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+    // </Card>
   );
 };
 
