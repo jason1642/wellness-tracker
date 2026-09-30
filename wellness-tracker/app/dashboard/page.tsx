@@ -64,15 +64,15 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
   const selectedKey = toDateKey(selectedDate);
 
   const selectedEntry = useMemo(
-    // eslint-disable-next-line
     () =>
+      // eslint-disable-next-line
       entryData.find((e: any) => String(e.date).slice(0, 10) === selectedKey),
     [entryData, selectedKey],
   );
 
   const selectedSleep = useMemo(
-    // eslint-disable-next-line
     () =>
+      // eslint-disable-next-line
       sleepData?.find((s: any) => toDateKey(new Date(s.date)) === selectedKey),
     [sleepData, selectedKey],
   );

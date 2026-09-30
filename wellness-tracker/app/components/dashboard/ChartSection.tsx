@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import * as React from "react";
 import { SleepSession } from "../../types";
+import Card from "./CardContainer";
 interface ChartDataPoint {
   day: string;
   dayLabel: string;
@@ -43,6 +44,7 @@ function mapSessionsToChartData(sessions: SleepSession[]): ChartDataPoint[] {
 }
 
 function renderAxisTick(pageData: ChartDataPoint[]) {
+  // eslint-disable-next-line
   return function AxisTick(props: any) {
     const { x, y, index } = props;
     const point = pageData[index];
@@ -74,7 +76,7 @@ function renderAxisTick(pageData: ChartDataPoint[]) {
     );
   };
 }
-
+// eslint-disable-next-line
 const ChartTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
 
@@ -131,98 +133,104 @@ const ChartSection = ({
   return (
     <>
       {sleepSessions ? (
-        <div className="bg-[#181B22] border border-neutral-800 rounded-2xl px-6 py-5 min-w-6xl mx-auto">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <p className="text-xl font-medium text-neutral-50">Sleep trend</p>
-              <p className="text-s text-neutral-500">{rangeLabel}</p>
-            </div>
+        <Card>
+          <div className="bg-[#181B22] border border-neutral-800 rounded-2xl px-6 py-5 min-w-6xl mx-auto">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-xl font-medium text-neutral-50">
+                  Sleep trend
+                </p>
+                <p className="text-s text-neutral-500">{rangeLabel}</p>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setPage((p) => p + 1)}
-                disabled={!canGoOlder}
-                aria-label="Previous week"
-                className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
-              >
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!canGoOlder}
+                  aria-label="Previous week"
+                  className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
                 >
-                  <path
-                    d="M12.5 5l-5 5 5 5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => setPage((p) => p - 1)}
-                disabled={!canGoNewer}
-                aria-label="Next week"
-                className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
-              >
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      d="M12.5 5l-5 5 5 5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => p - 1)}
+                  disabled={!canGoNewer}
+                  aria-label="Next week"
+                  className="rounded-md border border-neutral-700 p-1.5 text-neutral-300 transition-colors hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-transparent"
                 >
-                  <path
-                    d="M7.5 5l5 5-5 5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      d="M7.5 5l5 5-5 5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="h-28 min-h-70">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={pageData} barCategoryGap="20%">
+                  <XAxis
+                    dataKey="dayLabel"
+                    axisLine={false}
+                    tickLine={false}
+                    height={36}
+                    tick={renderAxisTick(pageData)}
                   />
-                </svg>
-              </button>
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#8a8a8a", fontSize: 12 }}
+                    width={32}
+                    tickFormatter={(value) => `${Math.floor(value)}h`}
+                    domain={[0, "dataMax + 1"]}
+                  />
+                  <Tooltip
+                    content={<ChartTooltip />}
+                    cursor={{ fill: "#ffffff", fillOpacity: 0.04 }}
+                  />
+                  <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
+                    {pageData.map((_, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          page === 0 && index === pageData.length - 1
+                            ? "#7ba7e8"
+                            : "#0f2647"
+                        }
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
-          <div className="h-28 min-h-70">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={pageData} barCategoryGap="20%">
-                <XAxis
-                  dataKey="dayLabel"
-                  axisLine={false}
-                  tickLine={false}
-                  height={36}
-                  tick={renderAxisTick(pageData)}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#8a8a8a", fontSize: 12 }}
-                  width={32}
-                  tickFormatter={(value) => `${Math.floor(value)}h`}
-                  domain={[0, "dataMax + 1"]}
-                />
-                <Tooltip
-                  content={<ChartTooltip />}
-                  cursor={{ fill: "#ffffff", fillOpacity: 0.04 }}
-                />
-                <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
-                  {pageData.map((_, index) => (
-                    <Cell
-                      key={index}
-                      fill={
-                        page === 0 && index === pageData.length - 1
-                          ? "#7ba7e8"
-                          : "#0f2647"
-                      }
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        </Card>
       ) : (
-        <div>Loading</div>
+        <Card>
+          <div>Loading</div>
+        </Card>
       )}
     </>
   );
