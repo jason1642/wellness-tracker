@@ -4,7 +4,8 @@
   "scripts": {
     "start": "npx tsx --watch app.ts",
     "seed-users": "npx tsx scripts/create-many-users.ts",
-    "seed-sleep-data": "npx tsx scripts/create-sleep-data.ts"
+    "sync-steps-data": "npx tsx scripts/syncStepsData.ts",
+    "sync-sleep-data": "npx tsx scripts/syncSleepData.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

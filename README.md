@@ -83,3 +83,7 @@ Trackers = {
 backend - 
 seed scripts (create user, seed sleep data for each automatically)
 Must run/rerun user seed script first before sleep data script
+
+
+Revision changes 
+    - Instead of generating sleep data ourselves, use zealthy 3rd party api to add sleep and step data according to matching emails; sync users data they would have gotten using another app/device which zealthy 3rd party api would represent, parsing that data into "sessions" that parse many timestamp/count values into daily snapshot totals to track progress/behaviour.

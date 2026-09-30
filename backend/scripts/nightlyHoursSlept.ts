@@ -8,7 +8,7 @@ import {
 // the data comes back as an array of many objects spanning days meaning i have to organize this into seperate sessions
 // Now that dummy data isnt being created where it was hardcoded to make sure each night always had long stretches
 // of 10 min intervals
-const getOneMonthRange = () => {
+export const getOneMonthRange = () => {
   const endTime = new Date();
   const startTime = new Date(endTime);
   startTime.setDate(startTime.getDate() - 30);

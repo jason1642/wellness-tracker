@@ -1,3 +1,4 @@
+// SLEEP TYPES
 // This is the 10 minute intervals that populate the data value in zealthys api
 interface SleepInterval {
   timestamp: string;
@@ -21,4 +22,28 @@ interface SleepSession {
   intervals: SleepInterval[];
 }
 
-export { type SleepInterval, type SleepData, type SleepSession };
+// STEPS TYPES
+
+interface StepDataInterval {
+  timestamp: string;
+  stepCount: number;
+}
+//response from zealthy step api
+interface StepData {
+  user: { email: string };
+  data: StepDataInterval[];
+}
+// sessions total by date
+interface DailySteps {
+  date: string;
+  totalSteps: number;
+}
+
+export {
+  type SleepInterval,
+  type SleepData,
+  type SleepSession,
+  type StepDataInterval,
+  type StepData,
+  type DailySteps,
+};
