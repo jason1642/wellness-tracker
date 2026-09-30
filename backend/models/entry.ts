@@ -10,6 +10,10 @@ export const SingleEntrySchema = new mongoose.Schema({
   medication: { type: Number, required: false, default: 0 },
   weight: { type: Number, required: false, default: 140 },
   screen_time: { type: Number, required: false, default: 0 },
+  // not using tracker collection anymore, add properties here
+  steps: { type: Number, required: false, default: 0 },
+  water: { type: Number, required: false, default: 0 }, // cups
+  calories: { type: Number, required: false, default: 0 },
 });
 
 const entrySchema = new Schema({

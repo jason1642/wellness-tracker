@@ -3,7 +3,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import _ from "lodash";
-import Tracker from "../models/tracker.ts";
+// import Tracker from "../models/tracker.ts";
 import Entry from "../models/entry.ts";
 import "dotenv/config";
 
@@ -63,14 +63,14 @@ authRouter.post("/verify", async (req, res, next) => {
     console.log(user);
     user = await User.findOne({ _id: user._id }).lean();
 
-    const [tracker, entry] = await Promise.all([
-      Tracker.findOne({ user_id: user._id }),
+    const [entry] = await Promise.all([
+      // Tracker.findOne({ user_id: user._id }),
       Entry.findOne({ user_id: user._id }),
     ]);
 
     return res.status(200).send({
       ...user,
-      tracker,
+      // tracker,
       entry,
     });
   } catch (err) {

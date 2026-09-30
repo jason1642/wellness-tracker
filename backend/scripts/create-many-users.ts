@@ -2,7 +2,6 @@ import fs from "fs";
 import mongoose from "mongoose";
 import "dotenv/config";
 import User from "../models/user.ts";
-import Tracker from "../models/tracker.ts";
 import Entry from "../models/entry.ts";
 import EntryData from "./entry-data.json" with { type: "json" };
 import SleepData from "../models/sleepData.ts";
@@ -32,18 +31,15 @@ let documentsArray: any[] = [];
 const users = ["alice", "bob", "ming"];
 const createManyDocuments = async () => {
   await User.deleteMany();
-  await Tracker.deleteMany();
   await Entry.deleteMany();
   await SleepData.deleteMany();
   let newUsers: InstanceType<typeof User>[] = [];
-  let newTrackers: InstanceType<typeof Tracker>[] = [];
   let newEntries: InstanceType<typeof Entry>[] = [];
 
   const resultArray = users.map((ele: string, key: number) => {
     // console.log(categories[Math.floor(Math.random() * categories.length)].name)
     //   const newPostId = new mongoose.Types.ObjectId()
-    // create new tracker and assign the new user id as a reference for the tracker
-    // so create user first then add user id after
+
     const newUser: InstanceType<typeof User> = new User({
       _id: new mongoose.Types.ObjectId(),
       username: ele,
@@ -57,20 +53,11 @@ const createManyDocuments = async () => {
       user_id: newUser._id,
       entries: EntryData,
     });
-    const newTracker: InstanceType<typeof Tracker> = new Tracker({
-      user_id: newUser._id,
-      // sleep_data: [],
-      // water_data: [],
-      // calories_data: [],
-      // steps_data: []
-    });
 
-    newUser.tracker_id = newTracker._id;
     newUser.entry_id = newEntry._id;
     console.log("this is the new user", newUser);
 
     newUsers.push(newUser);
-    newTrackers.push(newTracker);
     newEntries.push(newEntry);
     return newUser;
   });
@@ -79,7 +66,6 @@ const createManyDocuments = async () => {
   documentsArray = resultArray;
   await Entry.insertMany(newEntries);
   await User.insertMany(newUsers);
-  await Tracker.insertMany(newTrackers);
 };
 
 await createManyDocuments();

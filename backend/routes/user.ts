@@ -3,8 +3,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import mongoose from "mongoose";
-import Tracker from "../models/tracker.ts";
+// import Tracker from "../models/tracker.ts";
 import Entry from "../models/entry.ts";
+import SleepData from "../models/sleepData.ts";
 import _ from "lodash";
 import User from "../models/user.ts";
 import EntryData from "../scripts/entry-data.json" with { type: "json" };
@@ -38,22 +39,11 @@ const createUser = async (req: Request, res: Response) => {
       entries: EntryData,
     });
 
-    const sleepData = generateSleepData(7);
-    const newTracker: InstanceType<typeof Tracker> = new Tracker({
-      user_id: newUser._id,
-      _id: newUser.tracker_id,
-      sleep_data: sleepData,
-      water_data: Math.floor(Math.random() * 15) + 1,
-      steps_data: Math.floor(Math.random() * 10000) + 1,
-      calories_data: Math.floor(Math.random() * 2500) + 1,
-    });
     const salt = await bcrypt.genSalt(10);
     newUser.username = req.body.email;
     newUser.password = await bcrypt.hash(newUser.password, salt);
-    newUser.tracker_id = newTracker._id;
     newUser.entry_id = newEntry._id;
     await Entry.insertOne(newEntry);
-    await Tracker.insertOne(newTracker);
     await newUser.save();
     console.log("RUNNING SAVE");
 
@@ -117,7 +107,7 @@ const getOneUserByEmail = async (req: Request, res: Response) => {
 };
 router.get("/find-by-email/:email", getOneUserByEmail);
 
-const getTrackerEntryUserData = async (req: Request, res: Response) => {
+const getDashboardData = async (req: Request, res: Response) => {
   try {
     const { user_id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(user_id)) {
@@ -128,25 +118,23 @@ const getTrackerEntryUserData = async (req: Request, res: Response) => {
     if (!user) return res.status(404).send("User does not exist");
     console.log("full data user only", user);
     // promise.all will make both database searches run at the same time rather than individual awaits
-    const [tracker, entry] = await Promise.all([
-      Tracker.findOne({ user_id }),
+    const [entry, sleep] = await Promise.all([
       Entry.findOne({ user_id }),
+      SleepData.findOne({ user_id }),
     ]);
 
-    if (!tracker && !entry) {
-      return res
-        .status(404)
-        .send("No tracker or entry data found for this user");
+    if (!entry && !sleep) {
+      return res.status(404).send("No entry data found for this user");
     }
+    // can include user data but might be redundant since requester might already have it
     res.status(200).send({
-      ...user,
-      tracker,
       entry,
+      sleep,
     });
   } catch (err) {
     console.log(err);
     res.status(500).send("failed to fetch dashboard data");
   }
 };
-router.get("/full-data/:user_id", getTrackerEntryUserData);
+router.get("/dashboard-data/:user_id", getDashboardData);
 export default router;

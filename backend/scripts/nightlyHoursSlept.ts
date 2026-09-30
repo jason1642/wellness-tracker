@@ -5,10 +5,9 @@ import {
 } from "../types.ts";
 
 // Sleep data from zealthy api returns array of objects that represent 10 min intervals
-// the data is not enough to fill out the initial weekly sleep chart which is fine
+// the data comes back as an array of many objects spanning days meaning i have to organize this into seperate sessions
 // Now that dummy data isnt being created where it was hardcoded to make sure each night always had long stretches
-// of 10 min intervals, this data has long stretches of numbers less than 10 which doesnt really make sense but is fine
-// Displaying this data can be the same just having each point on the chart represent total hours slept that night
+// of 10 min intervals
 const getOneMonthRange = () => {
   const endTime = new Date();
   const startTime = new Date(endTime);

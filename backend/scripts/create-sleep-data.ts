@@ -1,7 +1,7 @@
 import fs from "fs";
 import mongoose from "mongoose";
 import "dotenv/config";
-import Tracker from "../models/tracker.ts";
+// import Tracker from "../models/tracker.ts";
 interface SleepEntry {
   timestamp: string;
   sleepMinutes: number;
@@ -101,40 +101,6 @@ export function generateSleepData(days: number = 7): SleepEntry[] {
 }
 
 let result: any[] = [];
-
-export const assignSleepDataToTrackers = async () => {
-  const trackers = await Tracker.find({}).lean().limit(30);
-  let documentsArray: any[] = [];
-
-  console.log("TRACKERLIST", trackers);
-  trackers.forEach((tracker) => {
-    const sleepData = generateSleepData(7);
-    const newTrackerData = {
-      ...tracker,
-      sleep_data: sleepData,
-      water_data: Math.floor(Math.random() * 15) + 1,
-      steps_data: Math.floor(Math.random() * 10000) + 1,
-      calories_data: Math.floor(Math.random() * 2500) + 1,
-    };
-    documentsArray.push(newTrackerData);
-    return newTrackerData;
-  });
-
-  // console.log("documentsArray", documentsArray)
-  console.log("documents Array", documentsArray);
-
-  await Tracker.deleteMany();
-  await Tracker.insertMany(documentsArray);
-  result = documentsArray;
-};
-
-await assignSleepDataToTrackers()
-  .then(() => {
-    console.log("Sleep data assigned to trackers");
-  })
-  .catch((err) => {
-    console.error("Error assigning sleep data to trackers:", err);
-  });
 
 // const sleepData = generateSleepData(7)
 // console.log(JSON.stringify({ data: sleepData }, null, 2))

@@ -1,9 +1,9 @@
-import * as React from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   updateSingleEntryById,
   createNewEntry,
   deleteEntry,
-} from "../../api-helpers/tracker-api";
+} from "../../api-helpers/entry-api";
 
 interface IRecentEntriesProps {
   // eslint-disable-next-line
@@ -80,27 +80,27 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   entryData,
   userData,
 }) => {
-  const [openIndex, setOpenIndex] = React.useState<number | null>(null);
-  const [editIndex, setEditIndex] = React.useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
   // eslint-disable-next-line
-  const [formValues, setFormValues] = React.useState<any>({});
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [saveError, setSaveError] = React.useState<string | null>(null);
-  const [isCreating, setIsCreating] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
-  const [deleteError, setDeleteError] = React.useState<string | null>(null);
-  const [newEntryValues, setNewEntryValues] = React.useState(emptyFormValues);
-  const [isCreatingSave, setIsCreatingSave] = React.useState(false);
-  const [createError, setCreateError] = React.useState<string | null>(null);
-  const [entries, setEntries] = React.useState(entryData.entries);
+  const [formValues, setFormValues] = useState<any>({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [newEntryValues, setNewEntryValues] = useState(emptyFormValues);
+  const [isCreatingSave, setIsCreatingSave] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [entries, setEntries] = useState(entryData.entries);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(entryData.entries);
     console.log("entry set state", entryData);
   }, [entryData]);
 
-  const sortedEntries = React.useMemo(() => {
+  const sortedEntries = useMemo(() => {
     return [...entries].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );

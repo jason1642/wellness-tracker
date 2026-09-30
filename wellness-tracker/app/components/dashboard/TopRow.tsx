@@ -1,17 +1,19 @@
 import * as React from "react";
 import { Moon, Footprints, GlassWater, Flame } from "lucide-react";
-import { TrackerModel } from "../../types";
+import { EntryModel } from "../../types";
 
 interface ITopRowProps {
-  trackerData: TrackerModel;
+  entryData: EntryModel;
 }
 
-const TopRow: React.FunctionComponent<ITopRowProps> = ({ trackerData }) => {
+const TopRow: React.FunctionComponent<ITopRowProps> = ({
+  entryData = { steps: 1252, calories: 2050, water: 7 },
+}) => {
   const stats = [
     { icon: Moon, label: "Sleep", value: "7.2h" },
-    { icon: Footprints, label: "Steps", value: trackerData.steps_data },
-    { icon: GlassWater, label: "Water", value: trackerData.water_data },
-    { icon: Flame, label: "Calories", value: trackerData.calories_data },
+    { icon: Footprints, label: "Steps", value: entryData.steps },
+    { icon: GlassWater, label: "Water", value: entryData.water },
+    { icon: Flame, label: "Calories", value: entryData.calories },
   ];
 
   React.useEffect(() => {
