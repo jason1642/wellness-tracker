@@ -22,8 +22,7 @@ npm run sync-steps-data
 npm run sync-sleep-data
 
 /// .env values
-MONGODB_PASSWORD=
-MONGODB_USERNAME=
+MONGODB_URI
 PORT=3001
 TOKEN_SECRET=
 ```
