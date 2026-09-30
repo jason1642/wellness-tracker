@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? `https://${process.env.BACKEND_URL}`
+    ? process.env.NEXT_PUBLIC_BACKEND_URL
     : "http://localhost:3001";
 const api = axios.create({ baseURL: baseUrl });
 
