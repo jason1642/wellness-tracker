@@ -10,6 +10,7 @@ interface TodayEntry {
 }
 
 interface IDailySnapshotProps {
+  selectedDate: Date;
   sleepHours?: number; // device-sourced, from SleepData — read-only here
   stepsToday?: number; // device-sourced, from Tracker/step API — read-only here
   todayEntry?: TodayEntry; // user-authored, from today's Entry — editable
@@ -164,6 +165,7 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
       const value = openMetric === "mood" ? draftValue : Number(draftValue);
       await onSaveField(openMetric, value);
       setOpenMetric(null);
+      // eslint-disable-next-line
     } catch (err: any) {
       setError(err?.message || "Failed to save. Try again.");
     } finally {

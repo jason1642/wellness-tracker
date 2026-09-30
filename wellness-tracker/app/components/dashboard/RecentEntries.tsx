@@ -7,9 +7,8 @@ import {
 
 interface IRecentEntriesProps {
   // eslint-disable-next-line
-  entryData: any;
-  // eslint-disable-next-line
-  userData: any;
+  entryData: any[];
+  userId: string;
 }
 // This is the createNewEntry function, add user input into the data prop aswell as user_id
 // export const createNewEntry = async (data) =>
@@ -78,7 +77,7 @@ const emptyFormValues = {
 
 const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   entryData,
-  userData,
+  userId,
 }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -92,12 +91,12 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const [newEntryValues, setNewEntryValues] = useState(emptyFormValues);
   const [isCreatingSave, setIsCreatingSave] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
-  const [entries, setEntries] = useState(entryData.entries);
+  // eslint-disable-next-line
+  const [entries, setEntries] = useState<any[]>(entryData ?? []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setEntries(entryData.entries);
-    console.log("entry set state", entryData);
+    // eslint-disable-next-line
+    setEntries(entryData ?? []);
   }, [entryData]);
 
   const sortedEntries = useMemo(() => {
@@ -170,21 +169,21 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
 
     try {
       // updateSingleEntryById takes user_id and the specific entry_id being edited
-      console.log(
-        "TEST HERE",
-        {
-          user_id: userData._id,
-          entry_id: entry._id,
-          ...payload,
-        },
-        userData,
-      );
+      // console.log(
+      //   "TEST HERE",
+      //   {
+      //     user_id: userData._id,
+      //     entry_id: entry._id,
+      //     ...payload,
+      //   },
+      //   userData,
+      // );
       // eslint-disable-next-line
-      const updated = await updateSingleEntryById({
-        user_id: userData._id,
-        entry_id: entry._id,
-        ...payload,
-      });
+      // const updated = await updateSingleEntryById({
+      //   user_id: userData._id,
+      //   entry_id: entry._id,
+      //   ...payload,
+      // });
 
       setEntries((prev) =>
         prev.map((e) => (e._id === entry._id ? { ...e, ...payload } : e)),
@@ -214,7 +213,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
 
     try {
       const created = await createNewEntry({
-        user_id: userData._id,
+        user_id: userId,
         ...payload,
       });
       // console.log("this is the created entry", payload);
@@ -245,10 +244,10 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
     setIsDeleting(true);
     setDeleteError(null);
     console.log(entry);
-    console.log(userData._id);
+    console.log(userId);
     try {
       await deleteEntry({
-        user_id: userData._id,
+        user_id: userId,
         entry_id: entry._id,
       });
 
