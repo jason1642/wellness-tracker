@@ -9,11 +9,39 @@ interface IRecentEntriesProps {
   // eslint-disable-next-line
   entryData: any[];
   userId: string;
+  sleepByDate?: Map<string, number>;
 }
 // This is the createNewEntry function, add user input into the data prop aswell as user_id
 // export const createNewEntry = async (data) =>
 //  await api.post(`/entry/${data.user_id}`).then(res=>res).catch(err=>err)
-
+const NumberField = ({
+  id,
+  label,
+  value,
+  onChange,
+  step = "1",
+}: {
+  id: string;
+  label: string;
+  value: string | number;
+  onChange: (v: string) => void;
+  step?: string;
+}) => (
+  <div>
+    <label className={labelClass} htmlFor={id}>
+      {label}
+    </label>
+    <input
+      id={id}
+      type="number"
+      min="0"
+      step={step}
+      className={`${inputClass} mt-1`}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </div>
+);
 const MOOD_STYLE = {
   happy: { emoji: "🙂", color: "#7FB8A0" },
   energetic: { emoji: "⚡", color: "#E8C468" },
@@ -107,6 +135,7 @@ const emptyFormValues = {
 const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   entryData,
   userId,
+  sleepByDate,
 }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -146,10 +175,13 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
     setEditIndex(i);
     setSaveError(null);
     setFormValues({
-      date: toDateInputValue(entry.date),
+      // date: toDateInputValue(entry.date),
       notes: entry.notes || "",
       mood: entry.mood || "neutral",
-      hours_slept: entry.hours_slept ?? "",
+      calories: entry.calories ?? "",
+      water: entry.water ?? "",
+
+      // hours_slept: entry.hours_slept ?? "",
       weight: entry.weight ?? "",
       screen_time: entry.screen_time ?? "",
       medication: entry.medication ?? "",
@@ -185,12 +217,13 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   const saveEdit = async (entry: any) => {
     setIsSaving(true);
     setSaveError(null);
+    const toNum = (v: unknown) => (v === "" || v == null ? null : Number(v));
 
     const payload = {
-      date: new Date(formValues.date).toISOString(),
+      calories: toNum(formValues.calories),
+      water: toNum(formValues.water),
       notes: formValues.notes,
       mood: formValues.mood,
-      hours_slept: Number(formValues.hours_slept),
       weight: Number(formValues.weight),
       screen_time: Number(formValues.screen_time),
       medication: Number(formValues.medication),
@@ -213,6 +246,11 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
       //   entry_id: entry._id,
       //   ...payload,
       // });
+      await updateSingleEntryById({
+        user_id: userId,
+        entry_id: entry._id,
+        ...payload,
+      });
 
       setEntries((prev) =>
         prev.map((e) => (e._id === entry._id ? { ...e, ...payload } : e)),
@@ -234,7 +272,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
       date: new Date(newEntryValues.date).toISOString(),
       notes: newEntryValues.notes,
       mood: newEntryValues.mood,
-      hours_slept: Number(newEntryValues.hours_slept),
+      // hours_slept: Number(newEntryValues.hours_slept),
       weight: Number(newEntryValues.weight),
       screen_time: Number(newEntryValues.screen_time),
       medication: Number(newEntryValues.medication),
@@ -302,6 +340,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
           onClick={isCreating ? cancelCreate : openCreateForm}
           className="flex items-center gap-1.5 rounded-md bg-[#7FB8A0] px-3 py-1.5 text-xs font-medium text-[#0F1116] transition-colors hover:bg-[#6FA890]"
         >
+          {/* nav row buttons to exit creation mode */}
           {isCreating ? (
             "Cancel"
           ) : (
@@ -325,21 +364,6 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
       {isCreating && (
         <div className="mb-4 rounded-lg border border-[#262A33] bg-[#14161C] px-4 py-3.5">
           <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-            <div>
-              <label className={labelClass} htmlFor="new-date">
-                Date
-              </label>
-              <input
-                id="new-date"
-                type="date"
-                className={`${inputClass} mt-1`}
-                value={newEntryValues.date}
-                onChange={(e) =>
-                  handleNewEntryFieldChange("date", e.target.value)
-                }
-              />
-            </div>
-
             <div>
               <label className={labelClass} htmlFor="new-mood">
                 Mood
@@ -465,12 +489,13 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
 
       <div className="flex flex-col gap-2.5">
         {sortedEntries.map((entry, i) => {
+          const dateKey = String(entry.date).slice(0, 10);
+          const hours = sleepByDate?.get(dateKey) ?? entry.hours_slept;
+          const hasSleep = hours != null && hours !== "";
           const mood = MOOD_STYLE[entry.mood] || MOOD_STYLE.neutral;
           const isOpen = openIndex === i;
           const isEditing = editIndex === i;
           const { weekday, day, month } = dateParts(entry.date);
-          const hasSleep =
-            entry.hours_slept != null && entry.hours_slept !== "";
 
           return (
             <div
@@ -544,10 +569,10 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                 </div>
 
                 <div className="flex shrink-0 items-center gap-3">
-                  {entry.hours_slept != null ? `${entry.hours_slept}h` : "—"}
+                  {/* {hasSleep ? `${hours}h` : "—"} */}
                   <div className="text-right">
                     <div className="text-xl font-semibold text-[#F2F3F5]">
-                      {hasSleep ? `${entry.hours_slept}h` : "—"}
+                      {hasSleep ? `${hours}h` : "—"}
                     </div>
                     <div className="text-[11px] uppercase tracking-wide text-[#5F6570]">
                       slept
@@ -574,7 +599,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
 
               {/* drop down read only view or edit form */}
               {isOpen && (
-                <div className="mb-3 rounded-lg bg-[#14161C] px-4 py-3.5">
+                <div className="mb-3 mx-3 rounded-lg bg-[#14161C] px-4 py-3.5">
                   {!isEditing ? (
                     <>
                       <div className="mb-3 text-xs text-[#5F6570]">
@@ -661,18 +686,10 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                     <div>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
                         <div>
-                          <label className={labelClass} htmlFor={`date-${i}`}>
-                            Date
-                          </label>
-                          <input
-                            id={`date-${i}`}
-                            type="date"
-                            className={`${inputClass} mt-1`}
-                            value={formValues.date}
-                            onChange={(e) =>
-                              handleFieldChange("date", e.target.value)
-                            }
-                          />
+                          <div className={labelClass}>Date</div>
+                          <div className="mt-1 text-sm text-[#F2F3F5]">
+                            {formatFullDate(entry.date)}
+                          </div>
                         </div>
 
                         <div>
@@ -696,19 +713,10 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                         </div>
 
                         <div>
-                          <label className={labelClass} htmlFor={`sleep-${i}`}>
-                            Hours slept
-                          </label>
-                          <input
-                            id={`sleep-${i}`}
-                            type="number"
-                            step="0.1"
-                            className={`${inputClass} mt-1`}
-                            value={formValues.hours_slept}
-                            onChange={(e) =>
-                              handleFieldChange("hours_slept", e.target.value)
-                            }
-                          />
+                          <div className={labelClass}>Hours slept</div>
+                          <div className="mt-1 text-sm text-[#F2F3F5]">
+                            {hasSleep ? `${hours}h` : "—"}
+                          </div>
                         </div>
 
                         <div>
