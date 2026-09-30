@@ -148,6 +148,10 @@ const ChartSection = ({
             <div className="min-w-0">
               <p className="text-xl font-medium text-neutral-50">Sleep trend</p>
               <p className="text-sm text-neutral-500">{rangeLabel}</p>
+              <p className="text-sm text-neutral-500">
+                {/* change this cause people might not want to calculate how many minutes is 7.2 hours */}
+                Sleep goal: <b>{LOW_SLEEP_HOURS} </b>hours
+              </p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -198,6 +202,7 @@ const ChartSection = ({
           <div className="h-28 min-h-70">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={pageData} barCategoryGap="20%">
+                {/* line represents threshold of sleep goal where under it it turns orange, should explain this somewhere on ui */}
                 <ReferenceLine
                   y={LOW_SLEEP_HOURS}
                   stroke="#D97757"
@@ -235,6 +240,7 @@ const ChartSection = ({
                       : isLatest
                         ? BAR_COLORS.normalLatest
                         : BAR_COLORS.normal;
+                    // replace this cell component with how barcharts wants me to do it
                     return <Cell key={point.day} fill={fill} />;
                   })}
                 </Bar>
@@ -244,6 +250,7 @@ const ChartSection = ({
         </div>
       ) : (
         // </Card>
+        //
         <Card>
           <div>Loading</div>
         </Card>

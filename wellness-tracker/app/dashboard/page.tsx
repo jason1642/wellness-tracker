@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import { getEntriesByUserId } from "../api-helpers/entry-api";
 import TopRow from "../components/dashboard/TopRow";
@@ -21,9 +21,14 @@ function toDateKey(d: Date): string {
     d.getDate(),
   ).padStart(2, "0")}`;
 }
-const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
+
+// fix when logging out and using another account, initial dashboard data shows previous user data that was held temporarily until reload
+// dashboard data including averages and the sorting that the chart and entry sections do should be cached with tanstack and saved there to
+// not have to always run their respective functions. they should stay stale for a while or until the user makes changes
+const Dashboard: React.FunctionComponent<IDashboardProps> = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   // 1. Verify the user first — the dashboard query depends on their _id.
+  // userData from verify should include entry data but not sleep data
   const {
     data: userData,
     isLoading: isUserLoading,
@@ -72,18 +77,21 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
 
   const selectedSteps = useMemo(
     () =>
+      // eslint-disable-next-line
       entryData?.find((s: any) => toDateKey(new Date(s.date)) === selectedKey),
     [entryData, selectedKey],
   );
   const selectedSleep = useMemo(() => {
     console.log("SLEEP memo Data", sleepData);
-    // eslint-disable-next-line
+
     return sleepData?.find(
+      // eslint-disable-next-line
       (s: any) => toDateKey(new Date(s.date)) === selectedKey,
     );
   }, [sleepData, selectedKey]);
   const sleepByDate = useMemo(() => {
     const map = new Map<string, number>();
+    // eslint-disable-next-line
     (sleepData ?? []).forEach((s: any) =>
       map.set(new Date(s.date).toISOString().slice(0, 10), s.hoursSlept),
     );
@@ -116,6 +124,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
   if (isUserError || !userData.data) {
     return <div>You need to be logged in to view this page.</div>;
   }
+
   return (
     <div className="mx-auto w-full bg-[#111318]  max-w-7xl p-4 sm:p-6">
       {/* <h2 className="mb-4 text-lg font-semibold text-[#F2F3F5]">Dashboard</h2> */}
@@ -128,23 +137,28 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
             onSelectDate={setSelectedDate}
             datesWithData={datesWithData}
           />
-          <TopRow entryData={entryData} />
+          <TopRow entryData={entryData} sleepData={sleepData ?? []} />
         </aside>
 
         <main className="flex min-w-0 flex-col gap-4">
+          {/* this shows the selected dates entry/tracked values, can click module to edit. need to include either all values 
+          at once or allow user to view more instead of having them search for the entry in the list below */}
           <DailySnapshot
-            key={selectedKey} // remounts on date change, which resets the open panel and draft state
+            key={selectedKey}
             selectedDate={selectedDate}
             sleepHours={selectedSleep?.hoursSlept}
             todayEntry={selectedEntry}
             stepsToday={selectedSteps?.steps}
             onSaveField={handleSaveField}
           />
-
+          {/* sleep data spanning back 2 weeks, the last page after clicking back a cuppa times shows 2 bars, change to show 
+          a full row even if the page before that includes that date aswell  */}
           <ChartSection
             sleepSessions={sleepData ?? []}
             // isLoading={isSleepLoading}
           />
+          {/* i dont like the overall design as it looks weird with missing data or not enough data to fill it
+           but its still functional with editing and deleting entries */}
           <RecentEntries
             sleepByDate={sleepByDate}
             userId={userData.data?._id}

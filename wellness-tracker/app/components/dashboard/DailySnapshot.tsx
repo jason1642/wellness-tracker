@@ -80,7 +80,7 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
     {
       key: "steps",
       label: "Steps",
-      icon: "🦶",
+      icon: "👟",
       value: stepsToday !== undefined ? stepsToday.toLocaleString() : "—",
       subLabel: "today",
       editable: false,
@@ -173,6 +173,8 @@ const DailySnapshot: React.FunctionComponent<IDailySnapshotProps> = ({
     }
   };
 
+  // recent screenshots might be always empty until synced with thirdparty api via backend
+  // can sync daily automatically somehow or manually
   return (
     <div className="rounded-xl border border-[#262A33] bg-[#181B22] p-4">
       <h2 className="mb-3 text-sm font-semibold text-[#8B92A1]">

@@ -14,34 +14,7 @@ interface IRecentEntriesProps {
 // This is the createNewEntry function, add user input into the data prop aswell as user_id
 // export const createNewEntry = async (data) =>
 //  await api.post(`/entry/${data.user_id}`).then(res=>res).catch(err=>err)
-const NumberField = ({
-  id,
-  label,
-  value,
-  onChange,
-  step = "1",
-}: {
-  id: string;
-  label: string;
-  value: string | number;
-  onChange: (v: string) => void;
-  step?: string;
-}) => (
-  <div>
-    <label className={labelClass} htmlFor={id}>
-      {label}
-    </label>
-    <input
-      id={id}
-      type="number"
-      min="0"
-      step={step}
-      className={`${inputClass} mt-1`}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  </div>
-);
+
 const MOOD_STYLE = {
   happy: { emoji: "🙂", color: "#7FB8A0" },
   energetic: { emoji: "⚡", color: "#E8C468" },
@@ -85,22 +58,6 @@ const Metric = ({
   </div>
 );
 
-function formatDay(iso) {
-  const d = new Date(iso);
-  const today = new Date();
-  const yest = new Date();
-  yest.setDate(today.getDate() - 1);
-
-  const isSameDay = (a, b) =>
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
-
-  if (isSameDay(d, today)) return "Today";
-  if (isSameDay(d, yest)) return "Yesterday";
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
 function formatFullDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
     weekday: "long",
@@ -108,12 +65,6 @@ function formatFullDate(iso: string) {
     day: "numeric",
     year: "numeric",
   });
-}
-
-// Converts an ISO date string to the yyyy-mm-dd format <input type="date"> expects
-function toDateInputValue(iso: string) {
-  if (!iso) return "";
-  return new Date(iso).toISOString().slice(0, 10);
 }
 
 const inputClass =
@@ -230,22 +181,6 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
     };
 
     try {
-      // updateSingleEntryById takes user_id and the specific entry_id being edited
-      // console.log(
-      //   "TEST HERE",
-      //   {
-      //     user_id: userData._id,
-      //     entry_id: entry._id,
-      //     ...payload,
-      //   },
-      //   userData,
-      // );
-      // eslint-disable-next-line
-      // const updated = await updateSingleEntryById({
-      //   user_id: userData._id,
-      //   entry_id: entry._id,
-      //   ...payload,
-      // });
       await updateSingleEntryById({
         user_id: userId,
         entry_id: entry._id,
@@ -329,6 +264,9 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
   };
   // sort entries by date, not date created
   // right now the user can create notes with dates in the future - fix later
+  // fix the entry row to not have date and emote backgrounds and not have a column flex in the middle section
+  // also have pagnation or date/month search rather than have it go down infinitely
+  // include uneditable steps in form, have the notes attribute look more attractive to edit or see
   return (
     <div className="w-full rounded-xl border border-[#262A33] bg-[#181B22] p-4 sm:p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -558,6 +496,13 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                         label="Screen"
                       />
                     )}
+                    {entry.screen_time != null && entry.screen_time !== "" && (
+                      <Metric
+                        icon="👟"
+                        value={`${entry.steps}`}
+                        label="Steps"
+                      />
+                    )}
                     {entry.medication != null && entry.medication !== "" && (
                       <Metric
                         icon="💊"
@@ -617,9 +562,7 @@ const RecentEntries: React.FunctionComponent<IRecentEntriesProps> = ({
                         <div>
                           <dt className={labelClass}>Hours slept</dt>
                           <dd className="mt-0.5 text-sm text-[#F2F3F5]">
-                            {entry.hours_slept != null
-                              ? `${entry.hours_slept}h`
-                              : "—"}
+                            {hasSleep ? `${hours}h` : "—"}
                           </dd>
                         </div>
 
