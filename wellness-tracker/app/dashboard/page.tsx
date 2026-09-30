@@ -82,7 +82,16 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
       (s: any) => toDateKey(new Date(s.date)) === selectedKey,
     );
   }, [sleepData, selectedKey]);
+  const sleepByDate = useMemo(() => {
+    const map = new Map<string, number>();
+    (sleepData ?? []).forEach((s: any) =>
+      map.set(new Date(s.date).toISOString().slice(0, 10), s.hoursSlept),
+    );
+    return map;
+  }, [sleepData]);
 
+  //   const hours = sleepData.hoursSlept ?? sleepByDate?.get(String(.date).slice(0, 10));
+  // const hasSleep = hours != null && hours !== "";
   const handleSaveField = async (
     field: keyof EntryModel,
     value: string | number,
@@ -136,7 +145,11 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props) => {
             sleepSessions={sleepData ?? []}
             // isLoading={isSleepLoading}
           />
-          <RecentEntries userId={userData.data?._id} entryData={entryData} />
+          <RecentEntries
+            sleepByDate={sleepByDate}
+            userId={userData.data?._id}
+            entryData={entryData}
+          />
         </main>
       </div>
     </div>
